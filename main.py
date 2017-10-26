@@ -4,7 +4,7 @@ from numpy import *
 from random import randint, uniform
 
 def main():
-	mixer.pre_init(44100, -16, 1, 512) 
+	mixer.pre_init(44100, -16, 1, 512)#no idea
 	init()
 	size = width, height = 800, 640
 	speed = [0, 0]
@@ -46,6 +46,7 @@ def main():
 				sys.exit()
 			if e.type == KEYUP and e.key == K_UP:
 				up = False
+				player.jumped = True #muidu teeb hüppe kohe ära
 			if e.type == KEYUP and e.key == K_DOWN:
 				down = False
 			if e.type == KEYUP and e.key == K_RIGHT:
@@ -90,7 +91,6 @@ def main():
 		for tile in world:
 			screen.blit(tile.image,(tile.rect.x -CameraX,tile.rect.y -CameraY))
 
-		
 		for fire in fire_list:
 
 			rand=randint(1,5)
@@ -229,7 +229,8 @@ class Player(sprite.Sprite):
 		self.xvel = 0
 		self.yvel = 0
 		self.onGround = False
-		self.has_djumped = False
+		self.can_jump = False
+		self.jumped = False
 		self.index = 0
 		self.image = self.stand_imagesR[self.index]
 		self.rect = self.image.get_rect()
@@ -245,6 +246,10 @@ class Player(sprite.Sprite):
 			if self.onGround: 
 				self.jump_sound.play()
 				self.yvel -= 10
+				self.can_jump = True
+			elif self.can_jump and self.jumped:
+				self.can_jump = False
+				self.yvel = -8
 		if down:
 			if was_right:
 				current_state = "duckR"
@@ -257,7 +262,7 @@ class Player(sprite.Sprite):
 		if shoot and not right and not left and not down:
 			if was_left:
 				current_state = "shootL"
-				for i in range(15):
+				for i in range(10):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(False)
@@ -268,7 +273,7 @@ class Player(sprite.Sprite):
 					self.fire_sound.play()
 			elif was_right:
 				current_state = "shootR"
-				for i in range(15):
+				for i in range(10):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(True)
@@ -317,6 +322,7 @@ class Player(sprite.Sprite):
 				if yvel > 0:
 					self.rect.bottom = p.rect.top
 					self.onGround = True
+					self.jumped = False
 					self.yvel = 0
 				if yvel < 0:
 					self.rect.top = p.rect.bottom
