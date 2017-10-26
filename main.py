@@ -101,6 +101,7 @@ def main():
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))
 		fire_list.update()
 		for enemy in enemies:
+			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
 		for fire in fire_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
 		enemies.update(world)
