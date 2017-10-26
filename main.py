@@ -100,18 +100,31 @@ def main():
 		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))
 		fire_list.update()
-		fire_list.draw(screen)
+		for enemy in enemies:
+		for fire in fire_list:
+			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
 		enemies.update(world)
-		enemies.draw(screen)
 		display.flip()
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
-		self.image= image.load("FarmerR.png").convert_alpha()
-		self.rect= self.image.get_rect()
+		self.imagesR= [image.load("hillyR.png").convert_alpha(),
+						image.load("hillyR1.png").convert_alpha(),
+						image.load("hillyR.png").convert_alpha(),
+						image.load("hillyR2.png").convert_alpha()]
+		self.imagesL= [image.load("hillyL.png").convert_alpha(),
+						image.load("hillyL1.png").convert_alpha(),
+						image.load("hillyL.png").convert_alpha(),
+						image.load("hillyL2.png").convert_alpha()]
+		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL}
+		self.index= 0
+		self.lugeja= 0
+		self.standing= False
+		self.image= self.imagedict["imgR"][self.index]
+		self.rect= Rect((64, 100), (50, 128))
 		self.onGround = False
-		self.yvel=-10
+		self.yvel=0
 		self.xvel=0
 	
 	def update(self, platforms):
@@ -121,9 +134,20 @@ class Hillbilly(sprite.Sprite):
 			if self.yvel > 80: self.yvel = 80
 		self.collide(self.xvel, self.yvel, platforms)
 		self.rect.top += self.yvel
+		self.onGround= False
+		self.collide(0, self.yvel, platforms)
+		self.animate()
 	
 	def animate(self):
-		print(hi)
+		if not self.standing:
+			self.lugeja+=1
+			if self.lugeja == 6:
+				if self.index != 3:
+					self.index+= 1
+				else:
+					self.index= 0
+				self.lugeja= 0
+			self.image= self.imagedict["imgR"][self.index]
 		
 	def collide(self, xvel, yvel, platforms):
 		for p in platforms:
@@ -236,8 +260,8 @@ class Player(sprite.Sprite):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(False)
-						fire.rect.x = self.rect.x - CameraX +8
-						fire.rect.y = self.rect.y - CameraY +37
+						fire.rect.x = self.rect.x +8
+						fire.rect.y = self.rect.y +37
 						fire_list.add(fire)
 				if not mixer.get_busy():
 					self.fire_sound.play()
@@ -247,8 +271,8 @@ class Player(sprite.Sprite):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(True)
-						fire.rect.x = self.rect.x - CameraX +28
-						fire.rect.y = self.rect.y - CameraY +37
+						fire.rect.x = self.rect.x +28
+						fire.rect.y = self.rect.y +37
 						fire_list.add(fire)
 				if not mixer.get_busy():
 					self.fire_sound.play()
@@ -333,7 +357,6 @@ class Fire(pygame.sprite.Sprite):
 			if image_rand == 4 and self.image_index != 4:	
 				self.image_index +=1
 			self.image = self.imagelist[self.image_index]
-			#if fire.image_index == 3:
 
 def gen_world(filename):
 	img = image.load(filename)
