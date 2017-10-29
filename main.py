@@ -13,7 +13,6 @@ def main():
 	blue = 110, 110, 255
 	zoom = 1 # !=0 
 	
-	CameraX, CameraY = 0,0 #pikslites
 	timer = time.Clock()
 	screen = display.set_mode(size)
 	display.set_caption("Killer Bunny: The Game")
@@ -22,9 +21,11 @@ def main():
 	was_right= True
 	was_left= False
 	
-	world = gen_world("world.png")
-	player = Player(64,64)
-	player.rect=player.rect.move([32,32])
+	generation = gen_world("world.png")
+	world = generation[0] #entities
+	player = generation[1]
+	CameraX = player.rect.x
+	CameraY = player.rect.y - 600#pikslites
 	
 	fire_list = pygame.sprite.Group()
 	
@@ -367,10 +368,11 @@ class Fire(pygame.sprite.Sprite):
 
 def gen_world(filename):
 	img = image.load(filename)
-	print(img.get_width()*32, img.get_height()*32)
 	rgbarray = surfarray.array3d(img)
 	
 	entities = sprite.Group()
+	
+	newlist = []
 	
 	i = 0
 	while i < img.get_height():
@@ -388,7 +390,12 @@ def gen_world(filename):
 				entities.add(Tile(i,j,"dirt_top_right.png"))
 			if(rgbarray[i][j][0]==236): #muruga vasak pool
 				entities.add(Tile(i,j,"dirt_top_left.png"))
+			if(rgbarray[i][j][1]==255):
+				player = Player(64,64)
+				player.rect=player.rect.move([i*32,j*32])
+	newlist.append(entities)
+	newlist.append(player)
 			
-	return entities
+	return newlist
 
 main()
