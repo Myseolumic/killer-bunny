@@ -27,6 +27,10 @@ def main():
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 600#pikslites
 	
+	GUI = pygame.sprite.Group()
+	health = GUI_bar((255,0,0), player.hp, [10,10])
+	GUI.add(health)
+	
 	fire_list = pygame.sprite.Group()
 	
 	enemies = pygame.sprite.Group()
@@ -105,7 +109,10 @@ def main():
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
 		for fire in fire_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
+		
+		GUI.draw(screen)
 		enemies.update(world)
+		
 		display.flip()
 
 class Hillbilly(sprite.Sprite):
@@ -124,7 +131,8 @@ class Hillbilly(sprite.Sprite):
 		self.lugeja= 0
 		self.standing= False
 		self.image= self.imagedict["imgR"][self.index]
-		self.rect= Rect((64, 100), (50, 128))
+		self.rect= Rect((64, 100), (50, 128)) #broken
+		#self.rect = self.image.get_rect() <- veel rohkem broken
 		self.onGround = False
 		self.yvel=0
 		self.xvel=0
@@ -229,6 +237,7 @@ class Player(sprite.Sprite):
 		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL}
 		self.xvel = 0
 		self.yvel = 0
+		self.hp = 100
 		self.onGround = False
 		self.can_jump = False
 		self.jumped = False
@@ -263,7 +272,7 @@ class Player(sprite.Sprite):
 		if shoot and not right and not left and not down:
 			if was_left:
 				current_state = "shootL"
-				for i in range(10):
+				for i in range(5):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(False)
@@ -274,7 +283,7 @@ class Player(sprite.Sprite):
 					self.fire_sound.play()
 			elif was_right:
 				current_state = "shootR"
-				for i in range(10):
+				for i in range(5):
 					rand = randint(1,2)
 					if rand == 2:
 						fire = Fire(True)
@@ -335,7 +344,7 @@ class Tile(sprite.Sprite):
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
 		
-class Fire(pygame.sprite.Sprite):
+class Fire(sprite.Sprite):
 	def __init__(self, speed):
 		sprite.Sprite.__init__(self)
 		self.imagelist=[image.load("fire.png").convert_alpha(),
@@ -366,6 +375,14 @@ class Fire(pygame.sprite.Sprite):
 				self.image_index +=1
 			self.image = self.imagelist[self.image_index]
 
+class GUI_bar(sprite.Sprite):
+	def __init__(self, color, value, offset):
+		sprite.Sprite.__init__(self)
+		self.width = value
+		self.image = Surface([self.width,20])
+		self.rect = self.image.get_rect().move(offset)
+		self.image.fill(color)
+			
 def gen_world(filename):
 	img = image.load(filename)
 	rgbarray = surfarray.array3d(img)
