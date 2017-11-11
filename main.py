@@ -27,8 +27,8 @@ def main():
 	generation = gen_world("springs1.png")
 	world = generation[0] #entities
 	player = generation[1]
-	W_width = generation[2][1]
-	W_height = generation[2][0]
+	W_width = generation[2][0]
+	W_height = generation[2][1]
 	print(W_width, W_height)
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
@@ -89,10 +89,10 @@ def main():
 		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, CameraX, CameraY)
 		
 		player.rect = player.rect.move(speed)
-		
-		if player.rect.x > size[0]//2+CameraX and CameraX + width < W_width*zoom: #zoom tuleviku jaoks
+		print(CameraX, W_width-width)
+		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
 			CameraX += 4
-		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32*zoom:
+		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32:
 			CameraY += 4
 		if player.rect.x < size[0]//2+CameraX and CameraX > 0:
 			CameraX -= 4
@@ -422,7 +422,7 @@ def gen_world(filename):
 				player.rect=player.rect.move([i*32,j*32])
 	newlist.append(entities)
 	newlist.append(player)
-	newlist.append([world_width, world_height])
+	newlist.append([world_width*32, world_height*32])
 			
 	return newlist
 
