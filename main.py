@@ -280,13 +280,18 @@ class Player(sprite.Sprite):
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, CameraX, CameraY):		
 		current_state = anim_state
 		
+		if not shoot:
+			if self.mana < self.maxmana:
+				self.mana+=0.2
+		
 		#movement
 		if up:
 			if self.onGround: 
 				self.jump_sound.play()
 				self.yvel -= 10
 				self.can_jump = True
-			elif self.can_jump and self.jumped:
+			elif self.can_jump and self.jumped and self.mana >= 40:
+				self.mana -=40
 				self.can_jump = False
 				self.Djump_sound.play()
 				smoke = Smoke()
