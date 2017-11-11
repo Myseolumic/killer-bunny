@@ -38,7 +38,7 @@ def main():
 	GUI.add(health)
 	
 	anim_list = pygame.sprite.Group()
-	#wings_list = 
+	smoke_list = pygame.sprite.Group()
 	
 	enemies = pygame.sprite.Group()
 	
@@ -86,7 +86,7 @@ def main():
 			if e.type == KEYDOWN and e.key == K_SPACE:
 				shoot = True
 		
-		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, CameraX, CameraY)
+		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, CameraX, CameraY)
 		
 		player.rect = player.rect.move(speed)
 		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
@@ -111,12 +111,21 @@ def main():
 		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))
 		anim_list.update()
+		smoke_list.update()
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
+<<<<<<< HEAD
 		for chilly in tokens:
 			screen.blit(chilly.image, (chilly.rect.x,chilly.rect.y))
+=======
+			
+		for smoke in smoke_list:
+			screen.blit(smoke.image,(smoke.rect.x -CameraX,smoke.rect.y -CameraY))
+			if smoke.imgcount == 6:
+				smoke_list.remove(smoke)
+>>>>>>> 028b25557b337172c6fc4fa605b912637e839c13
 		
 		GUI.draw(screen)
 		enemies.update(world)
@@ -258,7 +267,7 @@ class Player(sprite.Sprite):
 		self.Djump_sound = pygame.mixer.Sound('Jumpsound.wav')
 		self.fire_sound = pygame.mixer.Sound('jumperoo.wav')
 	
-	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, CameraX, CameraY):		
+	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, CameraX, CameraY):		
 		current_state = anim_state
 		
 		#movement
@@ -270,6 +279,10 @@ class Player(sprite.Sprite):
 			elif self.can_jump and self.jumped:
 				self.can_jump = False
 				self.Djump_sound.play()
+				smoke = Smoke()
+				smoke.rect.x = self.rect.x -50
+				smoke.rect.y = self.rect.y +20
+				smoke_list.add(smoke)
 				self.yvel = -10
 		if down:
 			if was_right:
@@ -348,6 +361,29 @@ class Player(sprite.Sprite):
 				if yvel < 0:
 					self.rect.top = p.rect.bottom
 					self.yvel += 1
+
+class Smoke(sprite.Sprite):
+	def __init__(self):
+		sprite.Sprite.__init__(self)
+		self.imagelist = [image.load("cloud1.png").convert_alpha(),
+						image.load("cloud2.png").convert_alpha(),
+						image.load("cloud3.png").convert_alpha(),
+						image.load("cloud4.png").convert_alpha(),
+						image.load("cloud5.png").convert_alpha(),
+						image.load("cloud6.png").convert_alpha(),
+						image.load("cloud6.png").convert_alpha()]
+		self.imgcount=0
+		self.image = self.imagelist[self.imgcount]
+		self.rect = self.image.get_rect()
+		self.indexcounter=0
+		
+	def update(self):
+		self.indexcounter+=1
+		if self.indexcounter == 4:
+			self.indexcounter = 0
+			if self.imgcount < 6:
+				self.imgcount+=1
+				self.image = self.imagelist[self.imgcount]
 
 class Tile(sprite.Sprite):
 	def __init__(self,x,y,img):
