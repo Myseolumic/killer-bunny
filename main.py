@@ -253,7 +253,7 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.vahe=0
 		self.jump_sound = pygame.mixer.Sound('hupe.wav')
-		self.Djump_sound = pygame.mixer.Sound('wingerino.wav')
+		self.Djump_sound = pygame.mixer.Sound('Jumpsound.wav')
 		self.fire_sound = pygame.mixer.Sound('jumperoo.wav')
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, CameraX, CameraY):		
