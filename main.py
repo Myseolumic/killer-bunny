@@ -119,7 +119,7 @@ def main():
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
 			
 		for chilly in tokens:
-			screen.blit(chilly.image, (chilly.rect.x,chilly.rect.y))
+			screen.blit(chilly.image, (chilly.rect.x -CameraX,chilly.rect.y -CameraY))
 			
 		for smoke in smoke_list:
 			screen.blit(smoke.image,(smoke.rect.x -CameraX,smoke.rect.y -CameraY))
