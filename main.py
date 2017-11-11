@@ -29,7 +29,6 @@ def main():
 	player = generation[1]
 	W_width = generation[2][0]
 	W_height = generation[2][1]
-	print(W_width, W_height)
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
 	
@@ -89,7 +88,6 @@ def main():
 		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, CameraX, CameraY)
 		
 		player.rect = player.rect.move(speed)
-		print(CameraX, W_width-width)
 		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
 			CameraX += 4
 		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32:
