@@ -21,11 +21,17 @@ def main():
 	was_right= True
 	was_left= False
 	
-	generation = gen_world("world.png")
+	
+	W_width = 0
+	W_height = 0
+	generation = gen_world("springs1.png")
 	world = generation[0] #entities
 	player = generation[1]
+	W_width = generation[2][1]
+	W_height = generation[2][0]
+	print(W_width, W_height)
 	CameraX = player.rect.x
-	CameraY = player.rect.y - 600#pikslites
+	CameraY = player.rect.y - 700#pikslites
 	
 	GUI = pygame.sprite.Group()
 	health = GUI_bar((255,0,0), player.hp, [10,10])
@@ -84,7 +90,7 @@ def main():
 		
 		player.rect = player.rect.move(speed)
 		
-		if player.rect.x > size[0]//2+CameraX and CameraX + width < 32*32*zoom: #zoom tuleviku jaoks
+		if player.rect.x > size[0]//2+CameraX and CameraX + width < W_width*zoom: #zoom tuleviku jaoks
 			CameraX += 4
 		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32*zoom:
 			CameraY += 4
@@ -390,7 +396,8 @@ class GUI_bar(sprite.Sprite):
 def gen_world(filename):
 	img = image.load(filename)
 	rgbarray = surfarray.array3d(img)
-	
+	world_width = len(rgbarray)
+	world_height = len(rgbarray[0])
 	entities = sprite.Group()
 	
 	newlist = []
@@ -402,7 +409,7 @@ def gen_world(filename):
 		i+=1
 	
 	for i in range(len(rgbarray)): #y
-		for j in range(len(rgbarray)): #x
+		for j in range(len(rgbarray[0])): #x
 			if(rgbarray[i][j][0]==237): #muruga pealmine osa
 				entities.add(Tile(i,j,"dirt_top.png"))
 			if(rgbarray[i][j][0]==200): #ilma muruta mulla osa
@@ -416,6 +423,7 @@ def gen_world(filename):
 				player.rect=player.rect.move([i*32,j*32])
 	newlist.append(entities)
 	newlist.append(player)
+	newlist.append([world_width, world_height])
 			
 	return newlist
 
