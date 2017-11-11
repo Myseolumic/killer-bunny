@@ -29,6 +29,7 @@ def main():
 	player = generation[1]
 	W_width = generation[2][0]
 	W_height = generation[2][1]
+	tokens = generation[3] #chillies
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
 	
@@ -114,9 +115,12 @@ def main():
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
+		for chilly in tokens:
+			screen.blit(chilly.image, (chilly.rect.x,chilly.rect.y))
 		
 		GUI.draw(screen)
 		enemies.update(world)
+		tokens.update()
 		
 		display.flip()
 
@@ -350,6 +354,33 @@ class Tile(sprite.Sprite):
 		sprite.Sprite.__init__(self)
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
+
+class Chilly(sprite.Sprite):
+	def __init__(self,x,y):
+		sprite.Sprite.__init__(self)
+		self.imagelist=[image.load("chilly.png").convert_alpha(),
+						image.load("chilly2.png").convert_alpha(),
+						image.load("chilly3.png").convert_alpha(),
+						image.load("chilly4.png").convert_alpha(),
+						image.load("chilly3.png").convert_alpha(),
+						image.load("chilly2.png").convert_alpha()]
+		self.image_index = 0
+		self.image = self.imagelist[self.image_index]
+		self.rect = self.image.get_rect().move(32*x,32*y)
+		self.lugeja = 0
+	
+	def update(self):
+		self.animate()
+	
+	def animate(self):
+		if self.lugeja == 5:
+			self.lugeja = 0
+			self.image_index+=1
+			if self.image_index > 5:
+				self.image_index = 0
+			self.image = self.imagelist[self.image_index]
+		else:
+			self.lugeja +=1
 		
 class Fire(sprite.Sprite):
 	def __init__(self, speed):
@@ -396,6 +427,7 @@ def gen_world(filename):
 	world_width = len(rgbarray)
 	world_height = len(rgbarray[0])
 	entities = sprite.Group()
+	tokens = sprite.Group()
 	
 	newlist = []
 	
@@ -407,20 +439,28 @@ def gen_world(filename):
 	
 	for i in range(len(rgbarray)): #y
 		for j in range(len(rgbarray[0])): #x
-			if(rgbarray[i][j][0]==237): #muruga pealmine osa
+			r = rgbarray[i][j][0]
+			g = rgbarray[i][j][1]
+			b = rgbarray[i][j][2]
+			
+			if(r==237): #muruga pealmine osa
 				entities.add(Tile(i,j,"dirt_top.png"))
-			if(rgbarray[i][j][0]==200): #ilma muruta mulla osa
+			if(r==200): #ilma muruta mulla osa
 				entities.add(Tile(i,j,"dirt_under.png"))
-			if(rgbarray[i][j][0]==238): #muruga parem pool
+			if(r==238): #muruga parem pool
 				entities.add(Tile(i,j,"dirt_top_right.png"))
-			if(rgbarray[i][j][0]==236): #muruga vasak pool
+			if(r==236): #muruga vasak pool
 				entities.add(Tile(i,j,"dirt_top_left.png"))
-			if(rgbarray[i][j][1]==255):
+			if(g==255):
 				player = Player(64,64)
 				player.rect=player.rect.move([i*32,j*32])
+			if(g==200 and b==200):
+				tokens.add(Chilly(i,j))
+			
 	newlist.append(entities)
 	newlist.append(player)
 	newlist.append([world_width*32, world_height*32])
+	newlist.append(tokens)
 			
 	return newlist
 
