@@ -114,18 +114,17 @@ def main():
 		smoke_list.update()
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
+			
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
-<<<<<<< HEAD
+			
 		for chilly in tokens:
 			screen.blit(chilly.image, (chilly.rect.x,chilly.rect.y))
-=======
 			
 		for smoke in smoke_list:
 			screen.blit(smoke.image,(smoke.rect.x -CameraX,smoke.rect.y -CameraY))
 			if smoke.imgcount == 6:
 				smoke_list.remove(smoke)
->>>>>>> 028b25557b337172c6fc4fa605b912637e839c13
 		
 		GUI.draw(screen)
 		enemies.update(world)
