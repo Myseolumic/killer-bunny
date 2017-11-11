@@ -34,7 +34,9 @@ def main():
 	CameraY = player.rect.y - 700#pikslites
 	
 	GUI = pygame.sprite.Group()
-	health = GUI_bar((255,0,0), player.hp, [10,10])
+	healthport = GUI_portrait([10,10])
+	health = GUI_bar((255,0,0), player.hp, [36,33])
+	GUI.add(healthport)
 	GUI.add(health)
 	
 	anim_list = pygame.sprite.Group()
@@ -447,6 +449,12 @@ class Fire(sprite.Sprite):
 			if image_rand == 4 and self.image_index != 4:	
 				self.image_index +=1
 			self.image = self.imagelist[self.image_index]
+			
+class GUI_portrait(sprite.Sprite):
+	def __init__(self, offset):
+		sprite.Sprite.__init__(self)
+		self.image = image.load("healthbarport.png").convert_alpha()
+		self.rect = self.image.get_rect().move(offset)
 
 class GUI_bar(sprite.Sprite):
 	def __init__(self, color, value, offset):
