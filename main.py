@@ -119,7 +119,7 @@ def main():
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
 			
 		for chilly in tokens:
-			screen.blit(chilly.image, (chilly.rect.x,chilly.rect.y))
+			screen.blit(chilly.image, (chilly.rect.x -CameraX, chilly.rect.y-CameraY))
 			
 		for smoke in smoke_list:
 			screen.blit(smoke.image,(smoke.rect.x -CameraX,smoke.rect.y -CameraY))
@@ -462,7 +462,7 @@ def gen_world(filename):
 	world_width = len(rgbarray)
 	world_height = len(rgbarray[0])
 	entities = sprite.Group()
-	tokens = sprite.Group()
+	token_list = sprite.Group()
 	
 	newlist = []
 	
@@ -490,12 +490,12 @@ def gen_world(filename):
 				player = Player(64,64)
 				player.rect=player.rect.move([i*32,j*32])
 			if(g==200 and b==200):
-				tokens.add(Chilly(i,j))
+				token_list.add(Chilly(i,j))
 			
 	newlist.append(entities)
 	newlist.append(player)
 	newlist.append([world_width*32, world_height*32])
-	newlist.append(tokens)
+	newlist.append(token_list)
 			
 	return newlist
 
