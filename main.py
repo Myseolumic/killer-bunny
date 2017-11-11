@@ -31,7 +31,8 @@ def main():
 	health = GUI_bar((255,0,0), player.hp, [10,10])
 	GUI.add(health)
 	
-	fire_list = pygame.sprite.Group()
+	anim_list = pygame.sprite.Group()
+	#wings_list = 
 	
 	enemies = pygame.sprite.Group()
 	
@@ -79,7 +80,7 @@ def main():
 			if e.type == KEYDOWN and e.key == K_SPACE:
 				shoot = True
 		
-		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, fire_list, CameraX, CameraY)
+		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, CameraX, CameraY)
 		
 		player.rect = player.rect.move(speed)
 		
@@ -96,18 +97,18 @@ def main():
 		for tile in world:
 			screen.blit(tile.image,(tile.rect.x -CameraX,tile.rect.y -CameraY))
 
-		for fire in fire_list:
+		for fire in anim_list:
 
 			rand=randint(1,5)
 			if rand == 3:
 				if fire.lugeja >= 40:
-					fire_list.remove(fire)
+					anim_list.remove(fire)
 		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))
-		fire_list.update()
+		anim_list.update()
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
-		for fire in fire_list:
+		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
 		
 		GUI.draw(screen)
@@ -231,6 +232,7 @@ class Player(sprite.Sprite):
 							
 		self.shoot_imagesR=[image.load("Shoot_R.png").convert_alpha(),
 							image.load("Shoot_R2.png").convert_alpha()]
+							
 		self.shoot_imagesL=[image.load("Shoot_L.png").convert_alpha(),
 							image.load("Shoot_L2.png").convert_alpha()]
 							
@@ -246,9 +248,10 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.vahe=0
 		self.jump_sound = pygame.mixer.Sound('hupe.wav')
+		self.Djump_sound = pygame.mixer.Sound('wingerino.wav')
 		self.fire_sound = pygame.mixer.Sound('jumperoo.wav')
 	
-	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, fire_list, CameraX, CameraY):		
+	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, CameraX, CameraY):		
 		current_state = anim_state
 		
 		#movement
@@ -259,7 +262,8 @@ class Player(sprite.Sprite):
 				self.can_jump = True
 			elif self.can_jump and self.jumped:
 				self.can_jump = False
-				self.yvel = -8
+				self.Djump_sound.play()
+				self.yvel = -10
 		if down:
 			if was_right:
 				current_state = "duckR"
@@ -278,7 +282,7 @@ class Player(sprite.Sprite):
 						fire = Fire(False)
 						fire.rect.x = self.rect.x +8
 						fire.rect.y = self.rect.y +37
-						fire_list.add(fire)
+						anim_list.add(fire)
 				if not mixer.get_busy():
 					self.fire_sound.play()
 			elif was_right:
@@ -289,7 +293,7 @@ class Player(sprite.Sprite):
 						fire = Fire(True)
 						fire.rect.x = self.rect.x +28
 						fire.rect.y = self.rect.y +37
-						fire_list.add(fire)
+						anim_list.add(fire)
 				if not mixer.get_busy():
 					self.fire_sound.play()
 		else:
@@ -379,7 +383,7 @@ class GUI_bar(sprite.Sprite):
 	def __init__(self, color, value, offset):
 		sprite.Sprite.__init__(self)
 		self.width = value
-		self.image = Surface([self.width,20])
+		self.image = Surface([self.width,12])
 		self.rect = self.image.get_rect().move(offset)
 		self.image.fill(color)
 			
