@@ -34,10 +34,14 @@ def main():
 	CameraY = player.rect.y - 700#pikslites
 	
 	GUI = pygame.sprite.Group()
-	healthport = GUI_portrait([10,10])
-	health = GUI_bar((255,0,0), player.hp, [36,33])
+	healthport = GUI_portrait("healthbarport.png",[10,10])
+	manaport = GUI_portrait("pentagram.png", [10,60])
+	health = GUI_bar((255,0,0), player.maxhp, [36,33])
+	mana = GUI_bar((100,0,230), player.maxmana, [52,73])
 	GUI.add(healthport)
 	GUI.add(health)
+	GUI.add(manaport)
+	GUI.add(mana)
 	
 	anim_list = pygame.sprite.Group()
 	smoke_list = pygame.sprite.Group()
@@ -129,6 +133,8 @@ def main():
 				smoke_list.remove(smoke)
 		
 		GUI.draw(screen)
+		health.update(player.hp)
+		mana.update(player.mana)
 		enemies.update(world)
 		tokens.update()
 		
@@ -257,6 +263,9 @@ class Player(sprite.Sprite):
 		self.xvel = 0
 		self.yvel = 0
 		self.hp = 100
+		self.maxhp = 100
+		self.maxmana = 84
+		self.mana = 84
 		self.onGround = False
 		self.can_jump = False
 		self.jumped = False
@@ -295,28 +304,30 @@ class Player(sprite.Sprite):
 		if right:
 			self.xvel = 4
 		if shoot and not right and not left and not down:
-			if was_left:
-				current_state = "shootL"
-				for i in range(5):
-					rand = randint(1,2)
-					if rand == 2:
-						fire = Fire(False)
-						fire.rect.x = self.rect.x +8
-						fire.rect.y = self.rect.y +37
-						anim_list.add(fire)
-				if not mixer.get_busy():
-					self.fire_sound.play()
-			elif was_right:
-				current_state = "shootR"
-				for i in range(5):
-					rand = randint(1,2)
-					if rand == 2:
-						fire = Fire(True)
-						fire.rect.x = self.rect.x +28
-						fire.rect.y = self.rect.y +37
-						anim_list.add(fire)
-				if not mixer.get_busy():
-					self.fire_sound.play()
+			if self.mana > 0:
+				self.mana-=1
+				if was_left:
+					current_state = "shootL"
+					for i in range(5):
+						rand = randint(1,2)
+						if rand == 2:
+							fire = Fire(False)
+							fire.rect.x = self.rect.x +8
+							fire.rect.y = self.rect.y +37
+							anim_list.add(fire)
+					if not mixer.get_busy():
+						self.fire_sound.play()
+				elif was_right:
+					current_state = "shootR"
+					for i in range(5):
+						rand = randint(1,2)
+						if rand == 2:
+							fire = Fire(True)
+							fire.rect.x = self.rect.x +28
+							fire.rect.y = self.rect.y +37
+							anim_list.add(fire)
+					if not mixer.get_busy():
+						self.fire_sound.play()
 		else:
 			self.fire_sound.fadeout(500)
 		if not self.onGround:
@@ -451,18 +462,24 @@ class Fire(sprite.Sprite):
 			self.image = self.imagelist[self.image_index]
 			
 class GUI_portrait(sprite.Sprite):
-	def __init__(self, offset):
+	def __init__(self, img, offset):
 		sprite.Sprite.__init__(self)
-		self.image = image.load("healthbarport.png").convert_alpha()
+		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(offset)
 
 class GUI_bar(sprite.Sprite):
-	def __init__(self, color, value, offset):
+	def __init__(self, color, maxvalue, offset):
 		sprite.Sprite.__init__(self)
-		self.width = value
+		self.width = maxvalue
+		self.color = color
 		self.image = Surface([self.width,12])
 		self.rect = self.image.get_rect().move(offset)
 		self.image.fill(color)
+	
+	def update(self, value):
+		self.width = value
+		self.image = Surface([self.width,12])
+		self.image.fill(self.color)
 			
 def gen_world(filename):
 	img = image.load(filename)
