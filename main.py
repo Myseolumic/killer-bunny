@@ -29,7 +29,6 @@ def main():
 	player = generation[1]
 	W_width = generation[2][0]
 	W_height = generation[2][1]
-	print(W_width, W_height)
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
 	
