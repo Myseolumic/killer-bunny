@@ -132,8 +132,7 @@ class Hillbilly(sprite.Sprite):
 		self.lugeja= 0
 		self.standing= False
 		self.image= self.imagedict["imgR"][self.index]
-		self.rect= Rect((64, 100), (50, 128)) #broken
-		#self.rect = self.image.get_rect() <- veel rohkem broken
+		self.rect= self.image.get_rect()
 		self.onGround = False
 		self.yvel=0
 		self.xvel=0
