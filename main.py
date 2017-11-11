@@ -408,7 +408,7 @@ class Chilly(sprite.Sprite):
 		self.animate()
 	
 	def animate(self):
-		if self.lugeja == 5:
+		if self.lugeja == 6:
 			self.lugeja = 0
 			self.image_index+=1
 			if self.image_index > 5:
