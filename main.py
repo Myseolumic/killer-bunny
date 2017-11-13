@@ -223,7 +223,10 @@ class Hillbilly(sprite.Sprite):
 		else:
 			if pygame.sprite.collide_rect(self.aggroArea, player):
 				deltax = player.rect.x - self.rect.x-38
-				print("Im tilted.", deltax)
+				if deltax > 0:
+					print("shoot R")
+				else:
+					print("shoot L")
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
