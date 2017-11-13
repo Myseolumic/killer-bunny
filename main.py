@@ -120,6 +120,7 @@ def main():
 			
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
+			screen.blit(enemy.aggroArea.image,(enemy.rect.x -CameraX -150,enemy.rect.y -CameraY))
 			
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
@@ -140,10 +141,23 @@ def main():
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
-		enemies.update(world)
+		enemies.update(world, player)
 		tokens.update()
 		proj_list.update(anim_list)
 		display.flip()
+
+class AggroRect(sprite.Sprite):
+	def __init__(self, parent):
+		sprite.Sprite.__init__(self)
+		
+		self.image = Surface((376,128))
+		self.image.fill((255,255,0))
+		#self.image.set_colorkey((255,255,0))
+		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
+
+	def update(self, parent):
+		self.rect.x = parent.rect.x-150
+		self.rect.y = parent.rect.y
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
@@ -165,16 +179,19 @@ class Hillbilly(sprite.Sprite):
 		self.onGround = False
 		self.yvel=0
 		self.xvel=0
+		self.aggroArea = AggroRect(self)
 	
-	def update(self, platforms):
+	def update(self, platforms, player):
 		self.rect.x +=1
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
-		self.collide(self.xvel, self.yvel, platforms)
+		self.collide(self.xvel, self.yvel, platforms, player)
 		self.rect.top += self.yvel
 		self.onGround= False
-		self.collide(0, self.yvel, platforms)
+		self.collide(0, self.yvel, platforms, player)
+		self.aggroArea.update(self)
+		self.collide(0, 0, platforms, player)
 		self.animate()
 	
 	def animate(self):
@@ -188,20 +205,25 @@ class Hillbilly(sprite.Sprite):
 				self.lugeja= 0
 			self.image= self.imagedict["imgR"][self.index]
 		
-	def collide(self, xvel, yvel, platforms):
-		for p in platforms:
-			if pygame.sprite.collide_rect(self, p):
-				if xvel > 0:
-					self.rect.right = p.rect.left
-				if xvel < 0:
-					self.rect.left = p.rect.right
-				if yvel > 0:
-					self.rect.bottom = p.rect.top
-					self.onGround = True
-					self.yvel = 0
-				if yvel < 0:
-					self.rect.top = p.rect.bottom
-					self.yvel += 1
+	def collide(self, xvel, yvel, platforms, player):
+		if xvel != 0 or yvel !=0:
+			for p in platforms:
+				if pygame.sprite.collide_rect(self, p):
+					if xvel > 0:
+						self.rect.right = p.rect.left
+					if xvel < 0:
+						self.rect.left = p.rect.right
+					if yvel > 0:
+						self.rect.bottom = p.rect.top
+						self.onGround = True
+						self.yvel = 0
+					if yvel < 0:
+						self.rect.top = p.rect.bottom
+						self.yvel += 1
+		else:
+			if pygame.sprite.collide_rect(self.aggroArea, player):
+				self.rect = self.image.get_rect()
+				print("Im tilted.")
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
