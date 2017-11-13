@@ -152,7 +152,7 @@ class AggroRect(sprite.Sprite):
 		
 		self.image = Surface((376,128))
 		self.image.fill((255,255,0))
-		#self.image.set_colorkey((255,255,0))
+		self.image.set_colorkey((255,255,0))
 		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
 
 	def update(self, parent):
@@ -222,8 +222,8 @@ class Hillbilly(sprite.Sprite):
 						self.yvel += 1
 		else:
 			if pygame.sprite.collide_rect(self.aggroArea, player):
-				self.rect = self.image.get_rect()
-				print("Im tilted.")
+				deltax = player.rect.x - self.rect.x-38
+				print("Im tilted.", deltax)
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
