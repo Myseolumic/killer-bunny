@@ -451,7 +451,10 @@ class Voidball(sprite.Sprite):
 	def __init__(self, speed, dmg):
 		sprite.Sprite.__init__(self)
 		self.imagelist = [image.load("proj1b.png").convert_alpha(),
+						image.load("proj5b.png").convert_alpha(),
 						image.load("proj2b.png").convert_alpha(),
+						image.load("proj4b.png").convert_alpha(),
+						image.load("proj6b.png").convert_alpha(),
 						image.load("proj3b.png").convert_alpha()]
 						
 		self.index = 0
@@ -469,8 +472,8 @@ class Voidball(sprite.Sprite):
 		fire.rect.x = self.rect.x + 24
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
-		if self.lugeja == 10:
-			if self.index != 2:
+		if self.lugeja == 3:
+			if self.index != 5:
 				self.index +=1
 				self.image = self.imagelist[self.index]
 			else:
