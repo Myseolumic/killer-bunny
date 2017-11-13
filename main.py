@@ -4,7 +4,9 @@ from numpy import *
 from random import randint, uniform
 
 def main():
-	mixer.pre_init(44100, -16, 1, 512)#no idea
+	mixer.pre_init(44100, -16, 1, 512)
+	pygame.mixer.init()
+	mixer.set_num_channels(8)
 	init()
 	size = width, height = 800, 640
 	speed = [0, 0]
@@ -92,8 +94,6 @@ def main():
 			if e.type == KEYDOWN and e.key == K_SPACE:
 				shoot = True
 		
-		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, CameraX, CameraY)
-		
 		player.rect = player.rect.move(speed)
 		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
 			CameraX += 4
@@ -109,13 +109,10 @@ def main():
 			screen.blit(tile.image,(tile.rect.x -CameraX,tile.rect.y -CameraY))
 
 		for fire in anim_list:
-
-			rand=randint(1,5)
-			if rand == 3:
-				if fire.lugeja >= 40:
-					anim_list.remove(fire)
+			if fire.lugeja >= 20:
+				anim_list.remove(fire)
 		
-		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))
+
 		anim_list.update()
 		smoke_list.update()
 		for enemy in enemies:
@@ -132,6 +129,8 @@ def main():
 			if smoke.imgcount == 6:
 				smoke_list.remove(smoke)
 		
+		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, CameraX, CameraY)
+		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
@@ -275,7 +274,8 @@ class Player(sprite.Sprite):
 		self.vahe=0
 		self.jump_sound = pygame.mixer.Sound('hupe.wav')
 		self.Djump_sound = pygame.mixer.Sound('Jumpsound.wav')
-		self.fire_sound = pygame.mixer.Sound('jumperoo.wav')
+		self.firechannel = mixer.Channel(5)
+		self.fire_sound = pygame.mixer.Sound('fire.wav')
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, CameraX, CameraY):		
 		current_state = anim_state
@@ -290,8 +290,8 @@ class Player(sprite.Sprite):
 				self.jump_sound.play()
 				self.yvel -= 10
 				self.can_jump = True
-			elif self.can_jump and self.jumped and self.mana >= 40:
-				self.mana -=40
+			elif self.can_jump and self.jumped and self.mana >= 30:
+				self.mana -=30
 				self.can_jump = False
 				self.Djump_sound.play()
 				smoke = Smoke()
@@ -308,33 +308,34 @@ class Player(sprite.Sprite):
 			self.xvel = -4
 		if right:
 			self.xvel = 4
-		if shoot and not right and not left and not down:
-			if self.mana > 0:
-				self.mana-=1
+		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
+			if self.mana > 0.5:
+				self.mana-=0.5
 				if was_left:
 					current_state = "shootL"
-					for i in range(5):
-						rand = randint(1,2)
-						if rand == 2:
-							fire = Fire(False)
-							fire.rect.x = self.rect.x +8
-							fire.rect.y = self.rect.y +37
-							anim_list.add(fire)
-					if not mixer.get_busy():
-						self.fire_sound.play()
 				elif was_right:
 					current_state = "shootR"
-					for i in range(5):
-						rand = randint(1,2)
-						if rand == 2:
-							fire = Fire(True)
-							fire.rect.x = self.rect.x +28
-							fire.rect.y = self.rect.y +37
-							anim_list.add(fire)
-					if not mixer.get_busy():
-						self.fire_sound.play()
+				for i in range(5):
+					randx = randint(-100,100)
+					randy = randint(-100,100)
+					if randx >= -50 and randx <=50 and randy > 50:
+						randy +=40
+					elif randx >= -50 and randx <=50 and randy < 50:
+						randy -=40
+					if randy >= -50 and randy <=50 and randx > 50:
+						randx +=40
+					elif randy >= -50 and randy <=50 and randx < 50:
+						randx -=40
+					fire = Fire(True, randx / -20, randy / -20)
+					fire.rect.x = self.rect.x + 21 +randx
+					fire.rect.y = self.rect.y + 40 +randy
+					anim_list.add(fire)
+					if not self.firechannel.get_busy() and self.mana !=0:
+						self.firechannel.play(self.fire_sound)
+			else:
+				self.fire_sound.fadeout(50)
 		else:
-			self.fire_sound.fadeout(500)
+			self.fire_sound.fadeout(50)
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
@@ -436,33 +437,29 @@ class Chilly(sprite.Sprite):
 			self.lugeja +=1
 		
 class Fire(sprite.Sprite):
-	def __init__(self, speed):
+	def __init__(self, speed, xx, yy):
 		sprite.Sprite.__init__(self)
 		self.imagelist=[image.load("fire.png").convert_alpha(),
 						image.load("fire2.png").convert_alpha(),
 						image.load("fire3.png").convert_alpha(),
-						image.load("fire4.png").convert_alpha(),
-						image.load("fire5.png").convert_alpha()]
+						]
 		self.image_index=0
 		self.image = self.imagelist[self.image_index]
 		self.rect = self.image.get_rect()
 		self.lugeja=0
-		self.vp=speed
-		if self.vp == True:
-			self.speed = randint(3,5)
-		elif self.vp == False:
-			self.speed = randint(-5,-3)
+		self.xspeed= xx
+		self.yspeed = yy
+
 	
 	def update(self):
-		dest = randint(-4,4)
-		self.rect.y += dest
-		self.rect.x +=self.speed
+		self.rect.y += self.yspeed
+		self.rect.x += self.xspeed
 		self.lugeja+=1
 		self.animate()
 		
 	def animate(self):
-			image_rand=randint(1,8)
-			if image_rand == 4 and self.image_index != 4:	
+			image_rand=randint(1,5)
+			if image_rand == 4 and self.image_index != 2:	
 				self.image_index +=1
 			self.image = self.imagelist[self.image_index]
 			
