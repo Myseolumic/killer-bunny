@@ -47,7 +47,7 @@ def main():
 	
 	anim_list = pygame.sprite.Group()
 	smoke_list = pygame.sprite.Group()
-	
+	proj_list = pygame.sprite.Group()
 	enemies = pygame.sprite.Group()
 	
 	hillbilly = Hillbilly()
@@ -62,6 +62,7 @@ def main():
 				sys.exit()
 			if e.type == KEYUP and e.key == K_SPACE:
 				shoot = False
+				player.charged = True
 			if e.type == KEYDOWN and e.key == K_ESCAPE:
 				sys.exit()
 			if e.type == KEYUP and e.key == K_UP:
@@ -115,6 +116,9 @@ def main():
 
 		anim_list.update()
 		smoke_list.update()
+		for proj in proj_list:
+			screen.blit(proj.image,(proj.rect.x -CameraX,proj.rect.y -CameraY))
+			
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
 			
@@ -129,14 +133,14 @@ def main():
 			if smoke.imgcount == 6:
 				smoke_list.remove(smoke)
 		
-		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, CameraX, CameraY)
+		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY)
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
 		enemies.update(world)
 		tokens.update()
-		
+		proj_list.update()
 		display.flip()
 
 class Hillbilly(sprite.Sprite):
@@ -268,16 +272,19 @@ class Player(sprite.Sprite):
 		self.onGround = False
 		self.can_jump = False
 		self.jumped = False
+		self.charged = False
 		self.index = 0
 		self.image = self.stand_imagesR[self.index]
 		self.rect = self.image.get_rect()
 		self.vahe=0
+		self.projdmg = 0
 		self.jump_sound = pygame.mixer.Sound('hupe.wav')
 		self.Djump_sound = pygame.mixer.Sound('Jumpsound.wav')
 		self.firechannel = mixer.Channel(5)
 		self.fire_sound = pygame.mixer.Sound('fire.wav')
+		self.projspawn= pygame.mixer.Sound("proj.wav")
 	
-	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, CameraX, CameraY):		
+	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
 		
 		if not shoot:
@@ -311,6 +318,7 @@ class Player(sprite.Sprite):
 		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
 			if self.mana > 0.5:
 				self.mana-=0.5
+				self.projdmg +=1
 				if was_left:
 					current_state = "shootL"
 				elif was_right:
@@ -336,6 +344,18 @@ class Player(sprite.Sprite):
 				self.fire_sound.fadeout(50)
 		else:
 			self.fire_sound.fadeout(50)
+		if self.charged:
+			if was_left:
+				speed = -3
+			elif was_right:
+				speed = 3
+			ball = Voidball(speed)
+			ball.rect.x = self.rect.x + 6
+			ball.rect.y = self.rect.y + 15
+			proj_list.add(ball)
+			self.projspawn.play()
+			self.charged = False
+			self.projdmg = 0
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
@@ -402,6 +422,32 @@ class Smoke(sprite.Sprite):
 			if self.imgcount < 6:
 				self.imgcount+=1
 				self.image = self.imagelist[self.imgcount]
+				
+class Voidball(sprite.Sprite):
+	def __init__(self, speed):
+		sprite.Sprite.__init__(self)
+		self.imagelist = [image.load("proj1b.png").convert_alpha(),
+						image.load("proj2b.png").convert_alpha(),
+						image.load("proj3b.png").convert_alpha()]
+						
+		self.index = 0
+		self.image = self.imagelist[self.index]
+		self.rect = self.image.get_rect()
+		self.lugeja = 0
+		self.speed = speed
+		
+	def update(self):
+		self.rect.x += self.speed
+		if self.lugeja == 5:
+			if self.index != 2:
+				self.index +=1
+				self.image = self.imagelist[self.index]
+			else:
+				self.index = 0
+				self.image = self.imagelist[self.index]
+			self.lugeja = 0
+		else:
+			self.lugeja+=1
 
 class Tile(sprite.Sprite):
 	def __init__(self,x,y,img):
