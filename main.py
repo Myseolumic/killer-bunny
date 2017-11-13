@@ -116,8 +116,7 @@ def main():
 
 		anim_list.update()
 		smoke_list.update()
-		for proj in proj_list:
-			screen.blit(proj.image,(proj.rect.x -CameraX,proj.rect.y -CameraY))
+
 			
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
@@ -125,6 +124,9 @@ def main():
 			
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
+
+		for proj in proj_list:
+			screen.blit(proj.image,(proj.rect.x -CameraX,proj.rect.y -CameraY))
 			
 		for chilly in tokens:
 			screen.blit(chilly.image, (chilly.rect.x -CameraX,chilly.rect.y -CameraY))
@@ -141,7 +143,7 @@ def main():
 		mana.update(player.mana)
 		enemies.update(world)
 		tokens.update()
-		proj_list.update()
+		proj_list.update(anim_list)
 		display.flip()
 
 class Hillbilly(sprite.Sprite):
@@ -351,12 +353,12 @@ class Player(sprite.Sprite):
 				self.fire_sound.fadeout(50)
 		else:
 			self.fire_sound.fadeout(50)
-		if self.charged:
+		if self.charged and self.projdmg > 10:
 			if was_left:
 				speed = -3
 			elif was_right:
 				speed = 3
-			ball = Voidball(speed)
+			ball = Voidball(speed, self.projdmg)
 			ball.rect.x = self.rect.x + 6
 			ball.rect.y = self.rect.y + 15
 			proj_list.add(ball)
@@ -431,7 +433,7 @@ class Smoke(sprite.Sprite):
 				self.image = self.imagelist[self.imgcount]
 				
 class Voidball(sprite.Sprite):
-	def __init__(self, speed):
+	def __init__(self, speed, dmg):
 		sprite.Sprite.__init__(self)
 		self.imagelist = [image.load("proj1b.png").convert_alpha(),
 						image.load("proj2b.png").convert_alpha(),
@@ -443,9 +445,16 @@ class Voidball(sprite.Sprite):
 		self.lugeja = 0
 		self.speed = speed
 		
-	def update(self):
-		self.rect.x += self.speed
-		if self.lugeja == 5:
+	def update(self,anim_list):
+		randmovey = randint(-2,2)
+		randmovex = randint(-2,2)
+		self.rect.y += randmovey
+		self.rect.x += self.speed + randmovex
+		fire = Fire(True, randmovex, randmovey)
+		fire.rect.x = self.rect.x + 24
+		fire.rect.y = self.rect.y + 24
+		anim_list.add(fire)
+		if self.lugeja == 10:
 			if self.index != 2:
 				self.index +=1
 				self.image = self.imagelist[self.index]
@@ -455,6 +464,7 @@ class Voidball(sprite.Sprite):
 			self.lugeja = 0
 		else:
 			self.lugeja+=1
+
 
 class Tile(sprite.Sprite):
 	def __init__(self,x,y,img):
