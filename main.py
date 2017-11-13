@@ -121,6 +121,7 @@ def main():
 			
 		for enemy in enemies:
 			screen.blit(enemy.image,(enemy.rect.x -CameraX,enemy.rect.y -CameraY))
+			screen.blit(enemy.aggroArea,(enemy.rect.x -CameraX -150,enemy.rect.y -CameraY))
 			
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
@@ -163,6 +164,10 @@ class Hillbilly(sprite.Sprite):
 		self.onGround = False
 		self.yvel=0
 		self.xvel=0
+		self.aggroArea = Surface((376,128))
+		self.aggroArea.fill((255,255,0))
+		#self.aggroArea.set_colorkey((255,255,0))
+		self.aggroRect = self.aggroArea.get_rect().move(self.rect.x, self.rect.y)
 	
 	def update(self, platforms):
 		self.rect.x +=1
@@ -200,6 +205,8 @@ class Hillbilly(sprite.Sprite):
 				if yvel < 0:
 					self.rect.top = p.rect.bottom
 					self.yvel += 1
+		if pygame.sprite.collide_rect(self.aggroRect, player):
+			print("Im tilted.")
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
