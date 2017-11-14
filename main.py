@@ -461,6 +461,8 @@ class Voidball(sprite.Sprite):
 						image.load("proj3b.png").convert_alpha()]
 						
 		self.index = 0
+		self.damage = dmg
+		print(self.damage)
 		self.image = self.imagelist[self.index]
 		self.rect = self.image.get_rect()
 		self.lugeja = 0
@@ -475,6 +477,7 @@ class Voidball(sprite.Sprite):
 		fire.rect.x = self.rect.x + 24
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
+		self.blastsound = pygame.mixer.Sound("vortex.wav")
 		if self.lugeja == 3:
 			if self.index != 5:
 				self.index +=1
@@ -495,6 +498,7 @@ class Voidball(sprite.Sprite):
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
+				self.blastsound.play().set_volume(0.5)
 
 class Voidblast(sprite.Sprite):
 	def __init__(self):
