@@ -143,7 +143,7 @@ def main():
 		mana.update(player.mana)
 		enemies.update(world, player)
 		tokens.update()
-		proj_list.update(anim_list)
+		proj_list.update(anim_list, enemies, proj_list)
 		display.flip()
 
 class AggroRect(sprite.Sprite):
@@ -466,7 +466,7 @@ class Voidball(sprite.Sprite):
 		self.lugeja = 0
 		self.speed = speed
 		
-	def update(self,anim_list):
+	def update(self,anim_list, enemylist, proj_list):
 		randmovey = randint(-2,2)
 		randmovex = randint(-2,2)
 		self.rect.y += randmovey
@@ -485,7 +485,43 @@ class Voidball(sprite.Sprite):
 			self.lugeja = 0
 		else:
 			self.lugeja+=1
+		self.collision(enemylist, anim_list, proj_list)
+	
+	def collision(self, enemies, anim_list, proj_list):
+		for en in enemies:
+			if pygame.sprite.collide_rect(self, en):	
+				proj_list.remove(self)
+				blast = Voidblast()
+				blast.rect.x = self.rect.x-48
+				blast.rect.y = self.rect.y-48
+				proj_list.add(blast)
 
+class Voidblast(sprite.Sprite):
+	def __init__(self):
+		sprite.Sprite.__init__(self)
+		self.imagelist = [image.load("blast0.png").convert_alpha(),
+						image.load("blast01.png").convert_alpha(),
+						image.load("blast1.png").convert_alpha(),
+						image.load("blast2.png").convert_alpha(),
+						image.load("blast3.png").convert_alpha(),
+						image.load("blast4.png").convert_alpha(),
+						image.load("blast5.png").convert_alpha(),
+						image.load("blast6.png").convert_alpha()]
+		self.index = 0
+		self.image = self.imagelist[self.index]
+		self.lugeja = 0
+		self.rect = self.image.get_rect()
+	
+	def update(self, list, list2, proj_list):
+		if self.lugeja == 5:
+			self.lugeja = 0
+			if self.index != 7:
+				self.index+=1
+				self.image = self.imagelist[self.index]
+			else:
+				proj_list.remove(self)
+		else:
+			self.lugeja +=1
 
 class Tile(sprite.Sprite):
 	def __init__(self,x,y,img):
