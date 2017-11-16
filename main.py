@@ -283,13 +283,35 @@ class Player(sprite.Sprite):
 							image.load("Ducking_L3.png").convert_alpha(),
 							image.load("Ducking_L2.png").convert_alpha()]
 							
-		self.shoot_imagesR=[image.load("Shoot_R.png").convert_alpha(),
-							image.load("Shoot_R2.png").convert_alpha()]
+		self.shoot_imagesR=[image.load("charge1.png").convert_alpha(),
+							image.load("charge2.png").convert_alpha(),
+							image.load("charge3.png").convert_alpha(),
+							image.load("charge4.png").convert_alpha(),
+							image.load("charge5.png").convert_alpha(),
+							image.load("charge6.png").convert_alpha(),
+							image.load("charge7.png").convert_alpha(),
+							image.load("charge8.png").convert_alpha()]
 							
-		self.shoot_imagesL=[image.load("Shoot_L.png").convert_alpha(),
-							image.load("Shoot_L2.png").convert_alpha()]
+		self.shoot_imagesL=[image.load("charge1L.png").convert_alpha(),
+							image.load("charge2L.png").convert_alpha(),
+							image.load("charge3L.png").convert_alpha(),
+							image.load("charge4L.png").convert_alpha(),
+							image.load("charge5L.png").convert_alpha(),
+							image.load("charge6L.png").convert_alpha(),
+							image.load("charge7L.png").convert_alpha(),
+							image.load("charge8L.png").convert_alpha()]
 							
-		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL}
+		self.charged_imagesR=[image.load("charged1.png").convert_alpha(),
+							image.load("charged2.png").convert_alpha(),
+							image.load("charged3.png").convert_alpha(),
+							image.load("charged4.png").convert_alpha()]
+							
+		self.charged_imagesL=[image.load("charged1L.png").convert_alpha(),
+							image.load("charged2L.png").convert_alpha(),
+							image.load("charged3L.png").convert_alpha(),
+							image.load("charged4L.png").convert_alpha()]
+							
+		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL, "chargedR": self.charged_imagesR, "chargedL": self.charged_imagesL}
 		self.xvel = 0
 		self.yvel = 0
 		self.hp = 100
@@ -343,13 +365,19 @@ class Player(sprite.Sprite):
 		if right:
 			self.xvel = 4
 		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
-			if self.mana > 0.5:
-				self.mana-=0.5
-				self.projdmg +=1
+			if self.mana > 1:
+				self.mana-=0
+				self.projdmg +=2
 				if was_left:
-					current_state = "shootL"
+					if self.projdmg < 50:
+						current_state = "shootL"
+					else:
+						current_state = "chargedL"
 				elif was_right:
-					current_state = "shootR"
+					if self.projdmg < 50:
+						current_state = "shootR"
+					else:
+						current_state = "chargedR"
 				for i in range(5):
 					randx = randint(-100,100)
 					randy = randint(-100,100)
@@ -371,18 +399,22 @@ class Player(sprite.Sprite):
 				self.fire_sound.fadeout(50)
 		else:
 			self.fire_sound.fadeout(50)
-		if self.charged and self.projdmg > 10:
-			if was_left:
-				speed = -3
-			elif was_right:
-				speed = 3
-			ball = Voidball(speed, self.projdmg)
-			ball.rect.x = self.rect.x + 6
-			ball.rect.y = self.rect.y + 15
-			proj_list.add(ball)
-			self.projspawn.play()
-			self.charged = False
-			self.projdmg = 0
+		if self.charged:
+			if self.projdmg >=48:
+				if was_left:
+					speed = -3
+				elif was_right:
+					speed = 3
+				ball = Voidball(speed, self.projdmg)
+				ball.rect.x = self.rect.x + 6
+				ball.rect.y = self.rect.y + 15
+				proj_list.add(ball)
+				self.projspawn.play()
+				self.charged = False
+				self.projdmg = 0
+			else:
+				self.projdmg = 0
+				self.charged = False
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
@@ -460,15 +492,23 @@ class Voidball(sprite.Sprite):
 						image.load("proj6b.png").convert_alpha(),
 						image.load("proj3b.png").convert_alpha()]
 						
+		self.decayimage=[image.load("fade1.png").convert_alpha(),
+						image.load("fade2.png").convert_alpha(),
+						image.load("fade3.png").convert_alpha(),
+						image.load("fade4.png").convert_alpha(),
+						image.load("fade5.png").convert_alpha(),
+						image.load("fade6.png").convert_alpha()]
+						
 		self.index = 0
 		self.damage = dmg
-		print(self.damage)
 		self.image = self.imagelist[self.index]
 		self.rect = self.image.get_rect()
 		self.lugeja = 0
+		self.decaytimer=0
 		self.speed = speed
 		
 	def update(self,anim_list, enemylist, proj_list):
+		self.decaytimer+=1
 		randmovey = randint(-2,2)
 		randmovex = randint(-2,2)
 		self.rect.y += randmovey
@@ -478,17 +518,32 @@ class Voidball(sprite.Sprite):
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
 		self.blastsound = pygame.mixer.Sound("vortex.wav")
-		if self.lugeja == 3:
-			if self.index != 5:
-				self.index +=1
-				self.image = self.imagelist[self.index]
-			else:
+		if self.lugeja == 4:
+			if self.decaytimer < 100:
+				if self.index != 5:
+					self.index +=1
+					self.image = self.imagelist[self.index]
+				else:
+					self.index = 0
+					self.image = self.imagelist[self.index]
+				self.lugeja = 0
+			elif self.decaytimer == 100:
 				self.index = 0
-				self.image = self.imagelist[self.index]
-			self.lugeja = 0
+				self.image = self.decayimage[self.index]
+				self.lugeja = 0
+			else:
+				if self.index != 5:
+					self.index +=1
+					self.image = self.decayimage[self.index]
+				else:
+					self.index = 0
+					self.image = self.decayimage[self.index]
+					proj_list.remove(self)
+				self.lugeja = 0
 		else:
 			self.lugeja+=1
 		self.collision(enemylist, anim_list, proj_list)
+
 	
 	def collision(self, enemies, anim_list, proj_list):
 		for en in enemies:
@@ -498,7 +553,7 @@ class Voidball(sprite.Sprite):
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
-				self.blastsound.play().set_volume(0.5)
+				self.blastsound.play().set_volume(0.4)
 
 class Voidblast(sprite.Sprite):
 	def __init__(self):
