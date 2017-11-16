@@ -320,8 +320,8 @@ class Player(sprite.Sprite):
 		self.yvel = 0
 		self.hp = 100
 		self.maxhp = 100
-		self.maxmana = 84
-		self.mana = 84
+		self.maxmana = int(84)
+		self.mana = int(84)
 		self.onGround = False
 		self.can_jump = False
 		self.jumped = False
@@ -369,8 +369,9 @@ class Player(sprite.Sprite):
 		if right:
 			self.xvel = 4
 		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
-			if self.mana > 1:
-				self.mana-=0
+			if self.mana > 0:
+				self.mana-=1
+				print(self.mana)
 				self.projdmg +=2
 				if was_left:
 					if self.projdmg < 50:
@@ -403,7 +404,7 @@ class Player(sprite.Sprite):
 				self.fire_sound.fadeout(50)
 		else:
 			self.fire_sound.fadeout(50)
-		if self.charged:
+		if self.charged or self.mana < 1 and self.mana > -1:
 			if self.projdmg >=48:
 				if was_left:
 					speed = -3
@@ -498,10 +499,7 @@ class Voidball(sprite.Sprite):
 						
 		self.decayimage=[image.load("fade1.png").convert_alpha(),
 						image.load("fade2.png").convert_alpha(),
-						image.load("fade3.png").convert_alpha(),
-						image.load("fade4.png").convert_alpha(),
-						image.load("fade5.png").convert_alpha(),
-						image.load("fade6.png").convert_alpha()]
+						image.load("fade3.png").convert_alpha()]
 						
 		self.index = 0
 		self.damage = dmg
@@ -523,7 +521,7 @@ class Voidball(sprite.Sprite):
 		anim_list.add(fire)
 		self.blastsound = pygame.mixer.Sound("vortex.wav")
 		if self.lugeja == 4:
-			if self.decaytimer < 100:
+			if self.decaytimer < 125:
 				if self.index != 5:
 					self.index +=1
 					self.image = self.imagelist[self.index]
@@ -531,12 +529,12 @@ class Voidball(sprite.Sprite):
 					self.index = 0
 					self.image = self.imagelist[self.index]
 				self.lugeja = 0
-			elif self.decaytimer == 100:
+			elif self.decaytimer == 125:
 				self.index = 0
 				self.image = self.decayimage[self.index]
 				self.lugeja = 0
 			else:
-				if self.index != 5:
+				if self.index != 2:
 					self.index +=1
 					self.image = self.decayimage[self.index]
 				else:
