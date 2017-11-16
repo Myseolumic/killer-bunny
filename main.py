@@ -23,7 +23,6 @@ def main():
 	was_right= True
 	was_left= False
 	
-	
 	W_width = 0
 	W_height = 0
 	generation = gen_world("springs1.png")
@@ -34,6 +33,9 @@ def main():
 	tokens = generation[3] #chillies
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
+	
+	background = image.load("background.png").convert_alpha()
+	background = transform.scale(background, (W_width, W_height))
 	
 	GUI = pygame.sprite.Group()
 	healthport = GUI_portrait("healthbarport.png",[10,10])
@@ -57,6 +59,9 @@ def main():
 	#main game loop
 	while 1:
 		timer.tick(60)
+		#background render
+		screen.blit(background,(0-CameraX/2,0-CameraY/2))
+		
 		for e in event.get():
 			if e.type == QUIT:
 				sys.exit()
@@ -105,7 +110,6 @@ def main():
 		if player.rect.y < size[1]//2+CameraY and CameraY > 0:
 			CameraY -= 4
 
-		screen.fill(blue)
 		for tile in world:
 			screen.blit(tile.image,(tile.rect.x -CameraX,tile.rect.y -CameraY))
 
@@ -586,6 +590,11 @@ class Tile(sprite.Sprite):
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
 
+class Finish(sprite.Sprite):
+	def __init__(self,x,y,img):
+		sprite.Sprite.__init__(self)
+		self.image = image.load(img).convert_alpha()
+		self.rect = self.image.get_rect().move(32*x, 32*y)
 class Chilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
@@ -690,11 +699,13 @@ def gen_world(filename):
 				entities.add(Tile(i,j,"dirt_top_right.png"))
 			if(r==236): #muruga vasak pool
 				entities.add(Tile(i,j,"dirt_top_left.png"))
-			if(g==255):
+			if(g==255 and r!=255):
 				player = Player(64,64)
 				player.rect=player.rect.move([i*32,j*32])
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
+			if(r==255 and g==255):
+				token_list.add(Finish(i,j,"Cave.png"))
 			
 	newlist.append(entities)
 	newlist.append(player)
