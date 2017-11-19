@@ -60,7 +60,7 @@ def main():
 	while 1:
 		timer.tick(60)
 		#background render
-		screen.blit(background,(0-CameraX/2,0-CameraY/2))
+		screen.blit(background,(0-CameraX/4,0-CameraY/4))
 		
 		for e in event.get():
 			if e.type == QUIT:
