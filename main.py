@@ -178,27 +178,30 @@ class Hillbilly(sprite.Sprite):
 		self.index= 0
 		self.lugeja= 0
 		self.standing= False
+		self.state = "imgR"
 		self.image= self.imagedict["imgR"][self.index]
 		self.rect= self.image.get_rect()
 		self.onGround = False
 		self.yvel=0
-		self.xvel=0
+		self.xvel=1
 		self.aggroArea = AggroRect(self)
+		self.lastxvel = 1
+		self.ammo = image.load("res/bullet.png").convert_alpha()
 	
 	def update(self, platforms, player):
-		self.rect.x +=1
+		self.rect = self.rect.move(self.xvel, self.yvel)
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
-		self.collide(self.xvel, self.yvel, platforms, player)
+		self.collide(self.xvel, 0, platforms, player)
 		self.rect.top += self.yvel
 		self.onGround= False
 		self.collide(0, self.yvel, platforms, player)
 		self.aggroArea.update(self)
 		self.collide(0, 0, platforms, player)
-		self.animate()
+		self.animate(self.state)
 	
-	def animate(self):
+	def animate(self, state):
 		if not self.standing:
 			self.lugeja+=1
 			if self.lugeja == 6:
@@ -207,16 +210,22 @@ class Hillbilly(sprite.Sprite):
 				else:
 					self.index= 0
 				self.lugeja= 0
-			self.image= self.imagedict["imgR"][self.index]
+			self.image= self.imagedict[state][self.index]
 		
 	def collide(self, xvel, yvel, platforms, player):
 		if xvel != 0 or yvel !=0:
 			for p in platforms:
 				if pygame.sprite.collide_rect(self, p):
 					if xvel > 0:
-						self.rect.right = p.rect.left
+						self.state = "imgL"
+						self.image = self.imagedict["imgL"][self.index]
+						self.rect.x -= 3
+						self.xvel = -1
 					if xvel < 0:
-						self.rect.left = p.rect.right
+						self.state = "imgR"
+						self.image = self.imagedict["imgR"][self.index]
+						self.xvel = 1
+						self.rect.x += 3
 					if yvel > 0:
 						self.rect.bottom = p.rect.top
 						self.onGround = True
@@ -228,9 +237,15 @@ class Hillbilly(sprite.Sprite):
 			if pygame.sprite.collide_rect(self.aggroArea, player):
 				deltax = player.rect.x - self.rect.x-38
 				if deltax > 0:
-					print("shoot R")
+					self.xvel = 2
+					self.state = "imgR"
+					#shoot
 				else:
-					print("shoot L")
+					self.xvel = -2
+					self.state = "imgL"
+					#shoot
+	def shoot(self, dir): #direction
+		print("BANG!")
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
