@@ -25,7 +25,7 @@ def main():
 	
 	W_width = 0
 	W_height = 0
-	generation = gen_world("springs1.png")
+	generation = gen_world("res/springs1.png")
 	world = generation[0] #entities
 	player = generation[1]
 	W_width = generation[2][0]
@@ -34,12 +34,12 @@ def main():
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
 	
-	background = image.load("background.png").convert_alpha()
+	background = image.load("res/background.png").convert_alpha()
 	background = transform.scale(background, (W_width, W_height))
 	
 	GUI = pygame.sprite.Group()
-	healthport = GUI_portrait("healthbarport.png",[10,10])
-	manaport = GUI_portrait("pentagram.png", [10,60])
+	healthport = GUI_portrait("res/healthbarport.png",[10,10])
+	manaport = GUI_portrait("res/pentagram.png", [10,60])
 	health = GUI_bar((255,0,0), player.maxhp, [36,33])
 	mana = GUI_bar((100,0,230), player.maxmana, [52,73])
 	GUI.add(healthport)
@@ -166,14 +166,14 @@ class AggroRect(sprite.Sprite):
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
-		self.imagesR= [image.load("hillyR.png").convert_alpha(),
-						image.load("hillyR1.png").convert_alpha(),
-						image.load("hillyR.png").convert_alpha(),
-						image.load("hillyR2.png").convert_alpha()]
-		self.imagesL= [image.load("hillyL.png").convert_alpha(),
-						image.load("hillyL1.png").convert_alpha(),
-						image.load("hillyL.png").convert_alpha(),
-						image.load("hillyL2.png").convert_alpha()]
+		self.imagesR= [image.load("res/hillyR.png").convert_alpha(),
+						image.load("res/hillyR1.png").convert_alpha(),
+						image.load("res/hillyR.png").convert_alpha(),
+						image.load("res/hillyR2.png").convert_alpha()]
+		self.imagesL= [image.load("res/hillyL.png").convert_alpha(),
+						image.load("res/hillyL1.png").convert_alpha(),
+						image.load("res/hillyL.png").convert_alpha(),
+						image.load("res/hillyL2.png").convert_alpha()]
 		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL}
 		self.index= 0
 		self.lugeja= 0
@@ -235,85 +235,85 @@ class Hillbilly(sprite.Sprite):
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
 		sprite.Sprite.__init__(self)
-		self.stand_imagesR= [image.load("Stand_R.png").convert_alpha(),
-							image.load("Stand_R2.png").convert_alpha(),
-							image.load("Stand_R3.png").convert_alpha(),
-							image.load("Stand_R4.png").convert_alpha()]
+		self.stand_imagesR= [image.load("res/Stand_R.png").convert_alpha(),
+							image.load("res/Stand_R2.png").convert_alpha(),
+							image.load("res/Stand_R3.png").convert_alpha(),
+							image.load("res/Stand_R4.png").convert_alpha()]
 		
-		self.stand_imagesL= [image.load("Stand_L.png").convert_alpha(),
-							image.load("Stand_L2.png").convert_alpha(),
-							image.load("Stand_L3.png").convert_alpha(),
-							image.load("Stand_L4.png").convert_alpha()]
+		self.stand_imagesL= [image.load("res/Stand_L.png").convert_alpha(),
+							image.load("res/Stand_L2.png").convert_alpha(),
+							image.load("res/Stand_L3.png").convert_alpha(),
+							image.load("res/Stand_L4.png").convert_alpha()]
 							
-		self.run_imagesR= [image.load("0R.png").convert_alpha(),
-							image.load("1R.png").convert_alpha(),
-							image.load("2R.png").convert_alpha(),
-							image.load("3R.png").convert_alpha(),
-							image.load("4R.png").convert_alpha()]
+		self.run_imagesR= [image.load("res/0R.png").convert_alpha(),
+							image.load("res/1R.png").convert_alpha(),
+							image.load("res/2R.png").convert_alpha(),
+							image.load("res/3R.png").convert_alpha(),
+							image.load("res/4R.png").convert_alpha()]
 		
-		self.run_imagesL= [image.load("0L.png").convert_alpha(),
-							image.load("1L.png").convert_alpha(),
-							image.load("2L.png").convert_alpha(),
-							image.load("3L.png").convert_alpha(),
-							image.load("4L.png").convert_alpha()]
+		self.run_imagesL= [image.load("res/0L.png").convert_alpha(),
+							image.load("res/1L.png").convert_alpha(),
+							image.load("res/2L.png").convert_alpha(),
+							image.load("res/3L.png").convert_alpha(),
+							image.load("res/4L.png").convert_alpha()]
 							
-		self.duck_imagesR= [image.load("Ducking_R.png").convert_alpha(),
-							image.load("Ducking_R.png").convert_alpha(),
-							image.load("Ducking_R.png").convert_alpha(),
-							image.load("Ducking_R.png").convert_alpha(),
-							image.load("Ducking_R.png").convert_alpha(),
-							image.load("Ducking_R2.png").convert_alpha(),
-							image.load("Ducking_R3.png").convert_alpha(),
-							image.load("Ducking_R4.png").convert_alpha(),
-							image.load("Ducking_R4.png").convert_alpha(),
-							image.load("Ducking_R4.png").convert_alpha(),
-							image.load("Ducking_R4.png").convert_alpha(),
-							image.load("Ducking_R4.png").convert_alpha(),
-							image.load("Ducking_R3.png").convert_alpha(),
-							image.load("Ducking_R2.png").convert_alpha()]
+		self.duck_imagesR= [image.load("res/Ducking_R.png").convert_alpha(),
+							image.load("res/Ducking_R.png").convert_alpha(),
+							image.load("res/Ducking_R.png").convert_alpha(),
+							image.load("res/Ducking_R.png").convert_alpha(),
+							image.load("res/Ducking_R.png").convert_alpha(),
+							image.load("res/Ducking_R2.png").convert_alpha(),
+							image.load("res/Ducking_R3.png").convert_alpha(),
+							image.load("res/Ducking_R4.png").convert_alpha(),
+							image.load("res/Ducking_R4.png").convert_alpha(),
+							image.load("res/Ducking_R4.png").convert_alpha(),
+							image.load("res/Ducking_R4.png").convert_alpha(),
+							image.load("res/Ducking_R4.png").convert_alpha(),
+							image.load("res/Ducking_R3.png").convert_alpha(),
+							image.load("res/Ducking_R2.png").convert_alpha()]
 		
-		self.duck_imagesL= [image.load("Ducking_L.png").convert_alpha(),
-							image.load("Ducking_L.png").convert_alpha(),
-							image.load("Ducking_L.png").convert_alpha(),
-							image.load("Ducking_L.png").convert_alpha(),
-							image.load("Ducking_L.png").convert_alpha(),
-							image.load("Ducking_L2.png").convert_alpha(),
-							image.load("Ducking_L3.png").convert_alpha(),
-							image.load("Ducking_L4.png").convert_alpha(),
-							image.load("Ducking_L4.png").convert_alpha(),
-							image.load("Ducking_L4.png").convert_alpha(),
-							image.load("Ducking_L4.png").convert_alpha(),
-							image.load("Ducking_L4.png").convert_alpha(),
-							image.load("Ducking_L3.png").convert_alpha(),
-							image.load("Ducking_L2.png").convert_alpha()]
+		self.duck_imagesL= [image.load("res/Ducking_L.png").convert_alpha(),
+							image.load("res/Ducking_L.png").convert_alpha(),
+							image.load("res/Ducking_L.png").convert_alpha(),
+							image.load("res/Ducking_L.png").convert_alpha(),
+							image.load("res/Ducking_L.png").convert_alpha(),
+							image.load("res/Ducking_L2.png").convert_alpha(),
+							image.load("res/Ducking_L3.png").convert_alpha(),
+							image.load("res/Ducking_L4.png").convert_alpha(),
+							image.load("res/Ducking_L4.png").convert_alpha(),
+							image.load("res/Ducking_L4.png").convert_alpha(),
+							image.load("res/Ducking_L4.png").convert_alpha(),
+							image.load("res/Ducking_L4.png").convert_alpha(),
+							image.load("res/Ducking_L3.png").convert_alpha(),
+							image.load("res/Ducking_L2.png").convert_alpha()]
 							
-		self.shoot_imagesR=[image.load("charge1.png").convert_alpha(),
-							image.load("charge2.png").convert_alpha(),
-							image.load("charge3.png").convert_alpha(),
-							image.load("charge4.png").convert_alpha(),
-							image.load("charge5.png").convert_alpha(),
-							image.load("charge6.png").convert_alpha(),
-							image.load("charge7.png").convert_alpha(),
-							image.load("charge8.png").convert_alpha()]
+		self.shoot_imagesR=[image.load("res/charge1.png").convert_alpha(),
+							image.load("res/charge2.png").convert_alpha(),
+							image.load("res/charge3.png").convert_alpha(),
+							image.load("res/charge4.png").convert_alpha(),
+							image.load("res/charge5.png").convert_alpha(),
+							image.load("res/charge6.png").convert_alpha(),
+							image.load("res/charge7.png").convert_alpha(),
+							image.load("res/charge8.png").convert_alpha()]
 							
-		self.shoot_imagesL=[image.load("charge1L.png").convert_alpha(),
-							image.load("charge2L.png").convert_alpha(),
-							image.load("charge3L.png").convert_alpha(),
-							image.load("charge4L.png").convert_alpha(),
-							image.load("charge5L.png").convert_alpha(),
-							image.load("charge6L.png").convert_alpha(),
-							image.load("charge7L.png").convert_alpha(),
-							image.load("charge8L.png").convert_alpha()]
+		self.shoot_imagesL=[image.load("res/charge1L.png").convert_alpha(),
+							image.load("res/charge2L.png").convert_alpha(),
+							image.load("res/charge3L.png").convert_alpha(),
+							image.load("res/charge4L.png").convert_alpha(),
+							image.load("res/charge5L.png").convert_alpha(),
+							image.load("res/charge6L.png").convert_alpha(),
+							image.load("res/charge7L.png").convert_alpha(),
+							image.load("res/charge8L.png").convert_alpha()]
 							
-		self.charged_imagesR=[image.load("charged1.png").convert_alpha(),
-							image.load("charged2.png").convert_alpha(),
-							image.load("charged3.png").convert_alpha(),
-							image.load("charged4.png").convert_alpha()]
+		self.charged_imagesR=[image.load("res/charged1.png").convert_alpha(),
+							image.load("res/charged2.png").convert_alpha(),
+							image.load("res/charged3.png").convert_alpha(),
+							image.load("res/charged4.png").convert_alpha()]
 							
-		self.charged_imagesL=[image.load("charged1L.png").convert_alpha(),
-							image.load("charged2L.png").convert_alpha(),
-							image.load("charged3L.png").convert_alpha(),
-							image.load("charged4L.png").convert_alpha()]
+		self.charged_imagesL=[image.load("res/charged1L.png").convert_alpha(),
+							image.load("res/charged2L.png").convert_alpha(),
+							image.load("res/charged3L.png").convert_alpha(),
+							image.load("res/charged4L.png").convert_alpha()]
 							
 		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL, "chargedR": self.charged_imagesR, "chargedL": self.charged_imagesL}
 		self.xvel = 0
@@ -331,11 +331,11 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.vahe=0
 		self.projdmg = 0
-		self.jump_sound = pygame.mixer.Sound('hupe.wav')
-		self.Djump_sound = pygame.mixer.Sound('Jumpsound.wav')
+		self.jump_sound = pygame.mixer.Sound('res/hupe.wav')
+		self.Djump_sound = pygame.mixer.Sound('res/Jumpsound.wav')
 		self.firechannel = mixer.Channel(5)
-		self.fire_sound = pygame.mixer.Sound('fire.wav')
-		self.projspawn= pygame.mixer.Sound("proj.wav")
+		self.fire_sound = pygame.mixer.Sound('res/fire.wav')
+		self.projspawn= pygame.mixer.Sound("res/proj.wav")
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
@@ -343,6 +343,7 @@ class Player(sprite.Sprite):
 		if not shoot:
 			if self.mana < self.maxmana:
 				self.mana+=0.2
+		#self.hp-=(1/30)
 		
 		#movement
 		if up:
@@ -371,7 +372,6 @@ class Player(sprite.Sprite):
 		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
 			if self.mana > 0:
 				self.mana-=1
-				print(self.mana)
 				self.projdmg +=2
 				if was_left:
 					if self.projdmg < 50:
@@ -467,13 +467,13 @@ class Player(sprite.Sprite):
 class Smoke(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
-		self.imagelist = [image.load("cloud1.png").convert_alpha(),
-						image.load("cloud2.png").convert_alpha(),
-						image.load("cloud3.png").convert_alpha(),
-						image.load("cloud4.png").convert_alpha(),
-						image.load("cloud5.png").convert_alpha(),
-						image.load("cloud6.png").convert_alpha(),
-						image.load("cloud6.png").convert_alpha()]
+		self.imagelist = [image.load("res/cloud1.png").convert_alpha(),
+						image.load("res/cloud2.png").convert_alpha(),
+						image.load("res/cloud3.png").convert_alpha(),
+						image.load("res/cloud4.png").convert_alpha(),
+						image.load("res/cloud5.png").convert_alpha(),
+						image.load("res/cloud6.png").convert_alpha(),
+						image.load("res/cloud6.png").convert_alpha()]
 		self.imgcount=0
 		self.image = self.imagelist[self.imgcount]
 		self.rect = self.image.get_rect()
@@ -490,16 +490,16 @@ class Smoke(sprite.Sprite):
 class Voidball(sprite.Sprite):
 	def __init__(self, speed, dmg):
 		sprite.Sprite.__init__(self)
-		self.imagelist = [image.load("proj1b.png").convert_alpha(),
-						image.load("proj5b.png").convert_alpha(),
-						image.load("proj2b.png").convert_alpha(),
-						image.load("proj4b.png").convert_alpha(),
-						image.load("proj6b.png").convert_alpha(),
-						image.load("proj3b.png").convert_alpha()]
+		self.imagelist = [image.load("res/proj1b.png").convert_alpha(),
+						image.load("res/proj5b.png").convert_alpha(),
+						image.load("res/proj2b.png").convert_alpha(),
+						image.load("res/proj4b.png").convert_alpha(),
+						image.load("res/proj6b.png").convert_alpha(),
+						image.load("res/proj3b.png").convert_alpha()]
 						
-		self.decayimage=[image.load("fade1.png").convert_alpha(),
-						image.load("fade2.png").convert_alpha(),
-						image.load("fade3.png").convert_alpha()]
+		self.decayimage=[image.load("res/fade1.png").convert_alpha(),
+						image.load("res/fade2.png").convert_alpha(),
+						image.load("res/fade3.png").convert_alpha()]
 						
 		self.index = 0
 		self.damage = dmg
@@ -519,7 +519,7 @@ class Voidball(sprite.Sprite):
 		fire.rect.x = self.rect.x + 24
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
-		self.blastsound = pygame.mixer.Sound("vortex.wav")
+		self.blastsound = pygame.mixer.Sound("res/vortex.wav")
 		if self.lugeja == 4:
 			if self.decaytimer < 125:
 				if self.index != 5:
@@ -560,14 +560,14 @@ class Voidball(sprite.Sprite):
 class Voidblast(sprite.Sprite):
 	def __init__(self):
 		sprite.Sprite.__init__(self)
-		self.imagelist = [image.load("blast0.png").convert_alpha(),
-						image.load("blast01.png").convert_alpha(),
-						image.load("blast1.png").convert_alpha(),
-						image.load("blast2.png").convert_alpha(),
-						image.load("blast3.png").convert_alpha(),
-						image.load("blast4.png").convert_alpha(),
-						image.load("blast5.png").convert_alpha(),
-						image.load("blast6.png").convert_alpha()]
+		self.imagelist = [image.load("res/blast0.png").convert_alpha(),
+						image.load("res/blast01.png").convert_alpha(),
+						image.load("res/blast1.png").convert_alpha(),
+						image.load("res/blast2.png").convert_alpha(),
+						image.load("res/blast3.png").convert_alpha(),
+						image.load("res/blast4.png").convert_alpha(),
+						image.load("res/blast5.png").convert_alpha(),
+						image.load("res/blast6.png").convert_alpha()]
 		self.index = 0
 		self.image = self.imagelist[self.index]
 		self.lugeja = 0
@@ -598,12 +598,12 @@ class Finish(sprite.Sprite):
 class Chilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
-		self.imagelist=[image.load("chilly.png").convert_alpha(),
-						image.load("chilly2.png").convert_alpha(),
-						image.load("chilly3.png").convert_alpha(),
-						image.load("chilly4.png").convert_alpha(),
-						image.load("chilly3.png").convert_alpha(),
-						image.load("chilly2.png").convert_alpha()]
+		self.imagelist=[image.load("res/chilly.png").convert_alpha(),
+						image.load("res/chilly2.png").convert_alpha(),
+						image.load("res/chilly3.png").convert_alpha(),
+						image.load("res/chilly4.png").convert_alpha(),
+						image.load("res/chilly3.png").convert_alpha(),
+						image.load("res/chilly2.png").convert_alpha()]
 		self.image_index = 0
 		self.image = self.imagelist[self.image_index]
 		self.rect = self.image.get_rect().move(32*x,32*y)
@@ -625,9 +625,9 @@ class Chilly(sprite.Sprite):
 class Fire(sprite.Sprite):
 	def __init__(self, speed, xx, yy):
 		sprite.Sprite.__init__(self)
-		self.imagelist=[image.load("fire.png").convert_alpha(),
-						image.load("fire2.png").convert_alpha(),
-						image.load("fire3.png").convert_alpha(),
+		self.imagelist=[image.load("res/fire.png").convert_alpha(),
+						image.load("res/fire2.png").convert_alpha(),
+						image.load("res/fire3.png").convert_alpha(),
 						]
 		self.image_index=0
 		self.image = self.imagelist[self.image_index]
@@ -681,8 +681,8 @@ def gen_world(filename):
 	
 	i = 0
 	while i < img.get_height():
-		entities.add(Tile(-1,i,"wall.png"))
-		entities.add(Tile(img.get_width(),i,"wall.png"))
+		entities.add(Tile(-1,i,"res/wall.png"))
+		entities.add(Tile(img.get_width(),i,"res/wall.png"))
 		i+=1
 	
 	for i in range(len(rgbarray)): #y
@@ -692,20 +692,20 @@ def gen_world(filename):
 			b = rgbarray[i][j][2]
 			
 			if(r==237): #muruga pealmine osa
-				entities.add(Tile(i,j,"dirt_top.png"))
+				entities.add(Tile(i,j,"res/dirt_top.png"))
 			if(r==200): #ilma muruta mulla osa
-				entities.add(Tile(i,j,"dirt_under.png"))
+				entities.add(Tile(i,j,"res/dirt_under.png"))
 			if(r==238): #muruga parem pool
-				entities.add(Tile(i,j,"dirt_top_right.png"))
+				entities.add(Tile(i,j,"res/dirt_top_right.png"))
 			if(r==236): #muruga vasak pool
-				entities.add(Tile(i,j,"dirt_top_left.png"))
+				entities.add(Tile(i,j,"res/dirt_top_left.png"))
 			if(g==255 and r!=255):
 				player = Player(64,64)
 				player.rect=player.rect.move([i*32,j*32])
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
-				token_list.add(Finish(i,j,"Cave.png"))
+				token_list.add(Finish(i,j,"res/Cave.png"))
 			
 	newlist.append(entities)
 	newlist.append(player)
