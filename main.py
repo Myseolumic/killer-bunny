@@ -51,6 +51,7 @@ def main():
 	smoke_list = pygame.sprite.Group()
 	proj_list = pygame.sprite.Group()
 	enemies = pygame.sprite.Group()
+	billybullets= pygame.sprite.Group()
 	
 	hillbilly = Hillbilly()
 	enemies.add(hillbilly)
@@ -128,6 +129,9 @@ def main():
 			
 		for fire in anim_list:
 			screen.blit(fire.image,(fire.rect.x -CameraX,fire.rect.y -CameraY))
+			
+		for bullet in billybullets:
+			screen.blit(bullet.image,(bullet.rect.x -CameraX, bullet.rect.y -CameraY))
 
 		for proj in proj_list:
 			screen.blit(proj.image,(proj.rect.x -CameraX,proj.rect.y -CameraY))
@@ -145,8 +149,9 @@ def main():
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
-		enemies.update(world, player)
+		enemies.update(world, player,billybullets)
 		tokens.update()
+		billybullets.update()
 		proj_list.update(anim_list, enemies, proj_list)
 		display.flip()
 
@@ -162,6 +167,25 @@ class AggroRect(sprite.Sprite):
 	def update(self, parent):
 		self.rect.x = parent.rect.x-150
 		self.rect.y = parent.rect.y
+		
+class HillBullet(sprite.Sprite):
+	def __init__(self, dir):
+		sprite.Sprite.__init__(self)
+		self.imagelist = [image.load("res/bullet.png").convert_alpha(),
+							image.load("res/bulletL.png").convert_alpha()]
+		self.index = 0
+		self.image = self.imagelist[self.index]
+		self.rect = self.image.get_rect()
+		self.direction = dir
+		print("Bang")
+	
+	def update(self):
+		if self.direction == "right":
+			self.rect.x += 5
+			self.image = self.imagelist[0]
+		elif self.direction == "left":
+			self.rect.x -= 5
+			self.image = self.imagelist[1]
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
@@ -182,23 +206,24 @@ class Hillbilly(sprite.Sprite):
 		self.image= self.imagedict["imgR"][self.index]
 		self.rect= self.image.get_rect()
 		self.onGround = False
+		self.dir = "right"
 		self.yvel=0
 		self.xvel=1
 		self.aggroArea = AggroRect(self)
 		self.lastxvel = 1
-		self.ammo = image.load("res/bullet.png").convert_alpha()
+		self.reload = 0
 	
-	def update(self, platforms, player):
+	def update(self, platforms, player, billybullets):
 		self.rect = self.rect.move(self.xvel, self.yvel)
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
-		self.collide(self.xvel, 0, platforms, player)
+		self.collide(self.xvel, 0, platforms, player, billybullets)
 		self.rect.top += self.yvel
 		self.onGround= False
-		self.collide(0, self.yvel, platforms, player)
+		self.collide(0, self.yvel, platforms, player, billybullets)
 		self.aggroArea.update(self)
-		self.collide(0, 0, platforms, player)
+		self.collide(0, 0, platforms, player, billybullets)
 		self.animate(self.state)
 	
 	def animate(self, state):
@@ -212,18 +237,20 @@ class Hillbilly(sprite.Sprite):
 				self.lugeja= 0
 			self.image= self.imagedict[state][self.index]
 		
-	def collide(self, xvel, yvel, platforms, player):
+	def collide(self, xvel, yvel, platforms, player, billybullets):
 		if xvel != 0 or yvel !=0:
 			for p in platforms:
 				if pygame.sprite.collide_rect(self, p):
 					if xvel > 0:
 						self.state = "imgL"
-						self.image = self.imagedict["imgL"][self.index]
+						self.dir = "left"
+						self.image = self.imagedict[self.state][self.index]
 						self.rect.x -= 3
 						self.xvel = -1
 					if xvel < 0:
 						self.state = "imgR"
-						self.image = self.imagedict["imgR"][self.index]
+						self.dir = "right"
+						self.image = self.imagedict[self.state][self.index]
 						self.xvel = 1
 						self.rect.x += 3
 					if yvel > 0:
@@ -239,13 +266,30 @@ class Hillbilly(sprite.Sprite):
 				if deltax > 0:
 					self.xvel = 2
 					self.state = "imgR"
-					#shoot
+					self.dir = "right"
+					self.shoot(billybullets)
 				else:
 					self.xvel = -2
 					self.state = "imgL"
-					#shoot
-	def shoot(self, dir): #direction
-		print("BANG!")
+					self.dir = "left"
+					self.shoot(billybullets)
+					
+	def shoot(self, billybullets): #direction
+		if self.dir == "left":
+			speed = -3
+			offset = 0
+		elif self.dir == "right":
+			speed = 3
+			offset = 64
+		if self.reload == 30:
+			bullet = HillBullet(self.dir)
+			bullet.rect.x = self.rect.x + offset
+			bullet.rect.y = self.rect.y + 66
+			billybullets.add(bullet)
+			self.reload = 0
+		else:
+			self.reload+=1
+		
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
