@@ -195,7 +195,10 @@ class HillBullet(sprite.Sprite):
 				billybullets.remove(self)
 		if pygame.sprite.collide_rect(self, player):
 			if not player.ducking:
-				player.hp-=1
+				if player.hp-1 > 0:
+					player.hp -= 1
+				else:
+					player.hp = 1
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
