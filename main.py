@@ -1,7 +1,7 @@
 import sys, pygame
 from pygame import *
 from numpy import *
-from random import randint, uniform
+from random import *
 
 def main():
 	mixer.pre_init(44100, -16, 1, 512)
@@ -151,7 +151,7 @@ def main():
 		mana.update(player.mana)
 		enemies.update(world, player,billybullets)
 		tokens.update()
-		billybullets.update()
+		billybullets.update(world, billybullets)
 		proj_list.update(anim_list, enemies, proj_list)
 		display.flip()
 
@@ -177,15 +177,19 @@ class HillBullet(sprite.Sprite):
 		self.image = self.imagelist[self.index]
 		self.rect = self.image.get_rect()
 		self.direction = dir
-		print("Bang")
 	
-	def update(self):
+	def update(self, world, billybullets):
 		if self.direction == "right":
-			self.rect.x += 5
+			self.rect.x += 8
+			self.rect.y += 1 + randint(-2,2)
 			self.image = self.imagelist[0]
 		elif self.direction == "left":
-			self.rect.x -= 5
+			self.rect.x -= 8
+			self.rect.y += 1 + randint(-2,2)
 			self.image = self.imagelist[1]
+		for p in world:
+			if pygame.sprite.collide_rect(self, p):
+				billybullets.remove(self)
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
@@ -212,6 +216,7 @@ class Hillbilly(sprite.Sprite):
 		self.aggroArea = AggroRect(self)
 		self.lastxvel = 1
 		self.reload = 0
+		self.shootsound = pygame.mixer.Sound('res/Gunshot2.wav')
 	
 	def update(self, platforms, player, billybullets):
 		self.rect = self.rect.move(self.xvel, self.yvel)
@@ -275,17 +280,19 @@ class Hillbilly(sprite.Sprite):
 					self.shoot(billybullets)
 					
 	def shoot(self, billybullets): #direction
+		self.shootsound.play()
 		if self.dir == "left":
 			speed = -3
 			offset = 0
 		elif self.dir == "right":
 			speed = 3
 			offset = 64
-		if self.reload == 30:
-			bullet = HillBullet(self.dir)
-			bullet.rect.x = self.rect.x + offset
-			bullet.rect.y = self.rect.y + 66
-			billybullets.add(bullet)
+		if self.reload == 50:
+			for i in range(3):
+				bullet = HillBullet(self.dir)
+				bullet.rect.x = self.rect.x + offset
+				bullet.rect.y = self.rect.y + 66
+				billybullets.add(bullet)
 			self.reload = 0
 		else:
 			self.reload+=1
@@ -654,6 +661,7 @@ class Finish(sprite.Sprite):
 		sprite.Sprite.__init__(self)
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
+
 class Chilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
