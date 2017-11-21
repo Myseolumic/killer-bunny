@@ -76,6 +76,7 @@ def main():
 				player.jumped = True #muidu teeb hüppe kohe ära
 			if e.type == KEYUP and e.key == K_DOWN:
 				down = False
+				player.ducking = False
 			if e.type == KEYUP and e.key == K_RIGHT:
 				right = False
 				was_right= True
@@ -90,6 +91,7 @@ def main():
 				up = True
 			if e.type == KEYDOWN and e.key == K_DOWN:
 				down = True
+				player.ducking = True
 			if e.type == KEYDOWN and e.key == K_LEFT:
 				left = True
 				was_left= True
@@ -151,7 +153,7 @@ def main():
 		mana.update(player.mana)
 		enemies.update(world, player,billybullets)
 		tokens.update()
-		billybullets.update(world, billybullets)
+		billybullets.update(world, billybullets, player)
 		proj_list.update(anim_list, enemies, proj_list)
 		display.flip()
 
@@ -159,17 +161,17 @@ class AggroRect(sprite.Sprite):
 	def __init__(self, parent):
 		sprite.Sprite.__init__(self)
 		
-		self.image = Surface((376,128))
+		self.image = Surface((576,128))
 		self.image.fill((255,255,0))
 		self.image.set_colorkey((255,255,0))
 		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
 
 	def update(self, parent):
-		self.rect.x = parent.rect.x-150
+		self.rect.x = parent.rect.x-250
 		self.rect.y = parent.rect.y
 		
 class HillBullet(sprite.Sprite):
-	def __init__(self, dir):
+	def __init__(self, dir, ycord):
 		sprite.Sprite.__init__(self)
 		self.imagelist = [image.load("res/bullet.png").convert_alpha(),
 							image.load("res/bulletL.png").convert_alpha()]
@@ -177,19 +179,23 @@ class HillBullet(sprite.Sprite):
 		self.image = self.imagelist[self.index]
 		self.rect = self.image.get_rect()
 		self.direction = dir
+		self.ymovement = ycord
 	
-	def update(self, world, billybullets):
+	def update(self, world, billybullets, player):
 		if self.direction == "right":
-			self.rect.x += 8
-			self.rect.y += 1 + randint(-2,2)
+			self.rect.x += 14
+			self.rect.y += self.ymovement + randint(-2,2)
 			self.image = self.imagelist[0]
 		elif self.direction == "left":
-			self.rect.x -= 8
-			self.rect.y += 1 + randint(-2,2)
+			self.rect.x -= 14
+			self.rect.y += self.ymovement + randint(-2,2)
 			self.image = self.imagelist[1]
 		for p in world:
 			if pygame.sprite.collide_rect(self, p):
 				billybullets.remove(self)
+		if pygame.sprite.collide_rect(self, player):
+			if not player.ducking:
+				player.hp-=1
 
 class Hillbilly(sprite.Sprite):
 	def __init__(self):
@@ -278,9 +284,14 @@ class Hillbilly(sprite.Sprite):
 					self.state = "imgL"
 					self.dir = "left"
 					self.shoot(billybullets)
+		
+		if pygame.sprite.collide_rect(self, player):
+			if self.dir == "right":
+				player.rect.x+= 3
+			elif self.dir == "left":
+				player.rect.x-=3
 					
 	def shoot(self, billybullets): #direction
-		self.shootsound.play()
 		if self.dir == "left":
 			speed = -3
 			offset = 0
@@ -288,8 +299,9 @@ class Hillbilly(sprite.Sprite):
 			speed = 3
 			offset = 64
 		if self.reload == 50:
-			for i in range(3):
-				bullet = HillBullet(self.dir)
+			self.shootsound.play()
+			for i in range(-1,2):
+				bullet = HillBullet(self.dir, i)
 				bullet.rect.x = self.rect.x + offset
 				bullet.rect.y = self.rect.y + 66
 				billybullets.add(bullet)
@@ -397,6 +409,7 @@ class Player(sprite.Sprite):
 		self.rect = self.image.get_rect()
 		self.vahe=0
 		self.projdmg = 0
+		self.ducking = False
 		self.jump_sound = pygame.mixer.Sound('res/hupe.wav')
 		self.Djump_sound = pygame.mixer.Sound('res/Jumpsound.wav')
 		self.firechannel = mixer.Channel(5)
@@ -586,6 +599,7 @@ class Voidball(sprite.Sprite):
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
 		self.blastsound = pygame.mixer.Sound("res/vortex.wav")
+		self.blastsound.set_volume(0.4)
 		if self.lugeja == 4:
 			if self.decaytimer < 125:
 				if self.index != 5:
@@ -612,7 +626,6 @@ class Voidball(sprite.Sprite):
 			self.lugeja+=1
 		self.collision(enemylist, anim_list, proj_list)
 
-	
 	def collision(self, enemies, anim_list, proj_list):
 		for en in enemies:
 			if pygame.sprite.collide_rect(self, en):	
@@ -621,7 +634,7 @@ class Voidball(sprite.Sprite):
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
-				self.blastsound.play().set_volume(0.4)
+				self.blastsound.play()
 
 class Voidblast(sprite.Sprite):
 	def __init__(self):
