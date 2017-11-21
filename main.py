@@ -154,7 +154,7 @@ def main():
 		enemies.update(world, player,billybullets)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
-		proj_list.update(anim_list, enemies, proj_list)
+		proj_list.update(anim_list, enemies, proj_list, world)
 		display.flip()
 
 class AggroRect(sprite.Sprite):
@@ -586,16 +586,15 @@ class Voidball(sprite.Sprite):
 		self.index = 0
 		self.damage = dmg
 		self.image = self.imagelist[self.index]
-		self.rect = self.image.get_rect()
+		self.rect = self.image.get_rect().inflate(0,-10)
 		self.lugeja = 0
 		self.decaytimer=0
 		self.speed = speed
 		
-	def update(self,anim_list, enemylist, proj_list):
+	def update(self, anim_list, enemylist, proj_list, platforms):
 		self.decaytimer+=1
 		randmovey = randint(-2,2)
 		randmovex = randint(-2,2)
-		self.rect.y += randmovey
 		self.rect.x += self.speed + randmovex
 		fire = Fire(True, randmovex, randmovey)
 		fire.rect.x = self.rect.x + 24
@@ -627,11 +626,20 @@ class Voidball(sprite.Sprite):
 				self.lugeja = 0
 		else:
 			self.lugeja+=1
-		self.collision(enemylist, anim_list, proj_list)
+		self.collision(enemylist, anim_list, proj_list, platforms)
 
-	def collision(self, enemies, anim_list, proj_list):
+	def collision(self, enemies, anim_list, proj_list, platforms):
 		for en in enemies:
 			if pygame.sprite.collide_rect(self, en):	
+				proj_list.remove(self)
+				blast = Voidblast()
+				blast.rect.x = self.rect.x-48
+				blast.rect.y = self.rect.y-48
+				proj_list.add(blast)
+				self.blastsound.play()
+		
+		for p in platforms:
+			if pygame.sprite.collide_rect(self, p):
 				proj_list.remove(self)
 				blast = Voidblast()
 				blast.rect.x = self.rect.x-48
@@ -655,7 +663,7 @@ class Voidblast(sprite.Sprite):
 		self.lugeja = 0
 		self.rect = self.image.get_rect()
 	
-	def update(self, list, list2, proj_list):
+	def update(self, list, list2, proj_list, list3):
 		if self.lugeja == 5:
 			self.lugeja = 0
 			if self.index != 7:
