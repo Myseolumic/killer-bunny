@@ -151,7 +151,7 @@ def main():
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
-		enemies.update(world, player,billybullets)
+		enemies.update(world, player,billybullets, enemies)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
 		proj_list.update(anim_list, enemies, proj_list, world)
@@ -207,11 +207,17 @@ class Hillbilly(sprite.Sprite):
 						image.load("res/hillyR1.png").convert_alpha(),
 						image.load("res/hillyR.png").convert_alpha(),
 						image.load("res/hillyR2.png").convert_alpha()]
+		
 		self.imagesL= [image.load("res/hillyL.png").convert_alpha(),
 						image.load("res/hillyL1.png").convert_alpha(),
 						image.load("res/hillyL.png").convert_alpha(),
 						image.load("res/hillyL2.png").convert_alpha()]
-		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL}
+						
+		self.standimagesR= [image.load("res/hillyR.png").convert_alpha()]
+		
+		self.standimagesL= [image.load("res/hillyL.png").convert_alpha()]
+						
+		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL, "imgRstand": self.standimagesR, "imgLstand": self.standimagesL}
 		self.index= 0
 		self.lugeja= 0
 		self.standing= False
@@ -220,6 +226,7 @@ class Hillbilly(sprite.Sprite):
 		self.rect= self.image.get_rect()
 		self.onGround = False
 		self.dir = "right"
+		self.hp = 50
 		self.yvel=0
 		self.xvel=1
 		self.aggroArea = AggroRect(self)
@@ -227,7 +234,9 @@ class Hillbilly(sprite.Sprite):
 		self.reload = 0
 		self.shootsound = pygame.mixer.Sound('res/Gunshot2.wav')
 	
-	def update(self, platforms, player, billybullets):
+	def update(self, platforms, player, billybullets, enemies):
+		if self.hp <= 0:
+			enemies.remove(self)
 		self.rect = self.rect.move(self.xvel, self.yvel)
 		if not self.onGround:
 			self.yvel += 0.3
@@ -249,7 +258,10 @@ class Hillbilly(sprite.Sprite):
 				else:
 					self.index= 0
 				self.lugeja= 0
-			self.image= self.imagedict[state][self.index]
+		elif self.standing:
+			self.lugeja = 0
+			self.index = 0
+		self.image= self.imagedict[state][self.index]
 		
 	def collide(self, xvel, yvel, platforms, player, billybullets):
 		if xvel != 0 or yvel !=0:
@@ -278,15 +290,26 @@ class Hillbilly(sprite.Sprite):
 			if pygame.sprite.collide_rect(self.aggroArea, player):
 				deltax = player.rect.x - self.rect.x-38
 				if deltax > 0:
-					self.xvel = 2
-					self.state = "imgR"
+					self.standing = True
+					self.xvel = 0
+					self.state = "imgRstand"
 					self.dir = "right"
 					self.shoot(billybullets)
 				else:
-					self.xvel = -2
-					self.state = "imgL"
+					self.standing = True
+					self.xvel = 0
+					self.state = "imgLstand"
 					self.dir = "left"
 					self.shoot(billybullets)
+			else:
+				if self.dir == "right":
+					self.standing = False
+					self.xvel = 2
+					self.state = "imgR"
+				elif self.dir == "left":
+					self.standing = False
+					self.xvel = -2
+					self.state = "imgL"
 		
 		if pygame.sprite.collide_rect(self, player):
 			if self.dir == "right":
@@ -636,6 +659,7 @@ class Voidball(sprite.Sprite):
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
+				en.hp -= self.damage
 				self.blastsound.play()
 		
 		for p in platforms:
