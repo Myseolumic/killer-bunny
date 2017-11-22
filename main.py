@@ -156,16 +156,16 @@ def main():
 		display.flip()
 
 class AggroRect(sprite.Sprite):
-	def __init__(self, parent):
+	def __init__(self, parent, width):
 		sprite.Sprite.__init__(self)
-		
-		self.image = Surface((576,128))
+		self.width = width
+		self.image = Surface((self.width + parent.rect.width, parent.rect.height))
 		self.image.fill((255,255,0))
 		self.image.set_colorkey((255,255,0))
 		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
 
 	def update(self, parent):
-		self.rect.x = parent.rect.x-250
+		self.rect.x = parent.rect.x-self.width/2
 		self.rect.y = parent.rect.y
 		
 class HillBullet(sprite.Sprite):
@@ -239,7 +239,7 @@ class Hillbilly(sprite.Sprite):
 		self.hp = 40
 		self.yvel=0
 		self.xvel=1
-		self.aggroArea = AggroRect(self)
+		self.aggroArea = AggroRect(self, 500)
 		self.dying = False
 		self.lastxvel = 1
 		self.reload = 0
