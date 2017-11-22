@@ -156,17 +156,18 @@ def main():
 		display.flip()
 
 class AggroRect(sprite.Sprite):
-	def __init__(self, parent, width):
+	def __init__(self, parent, width, height):
 		sprite.Sprite.__init__(self)
 		self.width = width
-		self.image = Surface((self.width + parent.rect.width, parent.rect.height))
+		self.height = height
+		self.image = Surface((self.width + parent.rect.width, parent.rect.height+self.height))
 		self.image.fill((255,255,0))
 		self.image.set_colorkey((255,255,0))
 		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
 
 	def update(self, parent):
 		self.rect.x = parent.rect.x-self.width/2
-		self.rect.y = parent.rect.y
+		self.rect.y = parent.rect.y-self.height
 		
 class HillBullet(sprite.Sprite):
 	def __init__(self, dir, ycord):
@@ -241,7 +242,7 @@ class Dog(sprite.Sprite):
 		self.hp = 40
 		self.yvel=0
 		self.xvel=0
-		self.aggroArea = AggroRect(self, 500)
+		self.aggroArea = AggroRect(self, 500, 0)
 		self.dying = False
 		
 	def update(self, platforms, player, billybullets, enemies):
@@ -379,7 +380,7 @@ class Hillbilly(sprite.Sprite):
 		self.hp = 40
 		self.yvel=0
 		self.xvel=1
-		self.aggroArea = AggroRect(self, 500)
+		self.aggroArea = AggroRect(self, 500, 0)
 		self.dying = False
 		self.reload = 0
 		self.shootsound = pygame.mixer.Sound('res/Gunshot2.wav')
