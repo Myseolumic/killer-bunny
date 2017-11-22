@@ -236,7 +236,7 @@ class Hillbilly(sprite.Sprite):
 		self.rect= self.image.get_rect().move((x,y))
 		self.onGround = False
 		self.dir = "right"
-		self.hp = 50
+		self.hp = 40
 		self.yvel=0
 		self.xvel=1
 		self.aggroArea = AggroRect(self)
@@ -279,7 +279,6 @@ class Hillbilly(sprite.Sprite):
 			self.lugeja = 0
 			self.index = 0
 		elif self.dying:
-			print(self.index)
 			self.lugeja+=1
 			if self.lugeja == 6:
 				if self.index != 4:
