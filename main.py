@@ -31,6 +31,7 @@ def main():
 	W_width = generation[2][0]
 	W_height = generation[2][1]
 	tokens = generation[3] #chillies
+	
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
 	
@@ -47,14 +48,11 @@ def main():
 	GUI.add(manaport)
 	GUI.add(mana)
 	
+	enemies = generation[4]
 	anim_list = pygame.sprite.Group()
 	smoke_list = pygame.sprite.Group()
 	proj_list = pygame.sprite.Group()
-	enemies = pygame.sprite.Group()
 	billybullets= pygame.sprite.Group()
-	
-	hillbilly = Hillbilly()
-	enemies.add(hillbilly)
 	
 	current_state="standR"
 	#main game loop
@@ -201,7 +199,7 @@ class HillBullet(sprite.Sprite):
 					player.hp = 1
 
 class Hillbilly(sprite.Sprite):
-	def __init__(self):
+	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
 		self.imagesR= [image.load("res/hillyR.png").convert_alpha(),
 						image.load("res/hillyR1.png").convert_alpha(),
@@ -218,6 +216,8 @@ class Hillbilly(sprite.Sprite):
 		self.state = "imgR"
 		self.image= self.imagedict["imgR"][self.index]
 		self.rect= self.image.get_rect()
+		self.rect.x = x
+		self.rect.y = y
 		self.onGround = False
 		self.dir = "right"
 		self.yvel=0
@@ -766,6 +766,7 @@ def gen_world(filename):
 	world_width = len(rgbarray)
 	world_height = len(rgbarray[0])
 	entities = sprite.Group()
+	enemies = sprite.Group()
 	token_list = sprite.Group()
 	
 	newlist = []
@@ -797,11 +798,16 @@ def gen_world(filename):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
 				token_list.add(Finish(i,j,"res/Cave.png"))
+			if(b==150):
+				print(i,j)
+				enemies.add(Hillbilly(i,j))
+				
 			
 	newlist.append(entities)
 	newlist.append(player)
 	newlist.append([world_width*32, world_height*32])
 	newlist.append(token_list)
+	newlist.append(enemies)
 			
 	return newlist
 
