@@ -221,9 +221,7 @@ class Hillbilly(sprite.Sprite):
 		self.standing= False
 		self.state = "imgR"
 		self.image= self.imagedict["imgR"][self.index]
-		self.rect= self.image.get_rect()
-		self.rect.x = x
-		self.rect.y = y
+		self.rect= self.image.get_rect().move((x,y))
 		self.onGround = False
 		self.dir = "right"
 		self.hp = 50
@@ -824,8 +822,9 @@ def gen_world(filename):
 				token_list.add(Finish(i,j,"res/Cave.png"))
 			if(b==150):
 				print(i,j)
-				enemies.add(Hillbilly(i,j))
-				
+				hillbilly = Hillbilly(i*32,j*32)
+				print(hillbilly.rect)
+				enemies.add(hillbilly)
 			
 	newlist.append(entities)
 	newlist.append(player)
