@@ -6,7 +6,7 @@ from random import *
 def main():
 	mixer.pre_init(44100, -16, 1, 512)
 	pygame.mixer.init()
-	mixer.set_num_channels(8)
+	mixer.set_num_channels(8) # 5 ja 7 kasutuses
 	init()
 	size = width, height = 800, 640
 	speed = [0, 0]
@@ -151,10 +151,10 @@ def main():
 		GUI.draw(screen)
 		health.update(player.hp)
 		mana.update(player.mana)
+		proj_list.update(anim_list, enemies, proj_list, world)
 		enemies.update(world, player,billybullets, enemies)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
-		proj_list.update(anim_list, enemies, proj_list, world)
 		display.flip()
 
 class AggroRect(sprite.Sprite):
@@ -213,11 +213,23 @@ class Hillbilly(sprite.Sprite):
 						image.load("res/hillyL.png").convert_alpha(),
 						image.load("res/hillyL2.png").convert_alpha()]
 						
+		self.deathimagesR= [image.load("res/hillyDeathR.png").convert_alpha(),
+						image.load("res/hillyDeathR2.png").convert_alpha(),
+						image.load("res/hillyDeathR3.png").convert_alpha(),
+						image.load("res/hillyDeathR4.png").convert_alpha(),
+						image.load("res/hillyDeathR5.png").convert_alpha()]
+		
+		self.deathimagesL= [image.load("res/hillyDeathL.png").convert_alpha(),
+						image.load("res/hillyDeathL2.png").convert_alpha(),
+						image.load("res/hillyDeathL3.png").convert_alpha(),
+						image.load("res/hillyDeathL4.png").convert_alpha(),
+						image.load("res/hillyDeathL5.png").convert_alpha()]
+						
 		self.standimagesR= [image.load("res/hillyR.png").convert_alpha()]
 		
 		self.standimagesL= [image.load("res/hillyL.png").convert_alpha()]
 						
-		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL, "imgRstand": self.standimagesR, "imgLstand": self.standimagesL}
+		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL, "imgRstand": self.standimagesR, "imgLstand": self.standimagesL, "imgRdeath": self.deathimagesR, "imgLdeath": self.deathimagesL }
 		self.index= 0
 		self.lugeja= 0
 		self.standing= False
@@ -230,13 +242,19 @@ class Hillbilly(sprite.Sprite):
 		self.yvel=0
 		self.xvel=1
 		self.aggroArea = AggroRect(self)
+		self.dying = False
 		self.lastxvel = 1
 		self.reload = 0
 		self.shootsound = pygame.mixer.Sound('res/Gunshot2.wav')
-	
+		
 	def update(self, platforms, player, billybullets, enemies):
+		print(self.rect.x)
 		if self.hp <= 0:
-			enemies.remove(self)
+			self.dying = True
+			if self.dir == "right":
+				self.state = "imgRdeath"
+			elif self.dir == "left":
+				self.state = "imgLdeath"
 		self.rect = self.rect.move(self.xvel, self.yvel)
 		if not self.onGround:
 			self.yvel += 0.3
@@ -247,20 +265,29 @@ class Hillbilly(sprite.Sprite):
 		self.collide(0, self.yvel, platforms, player, billybullets)
 		self.aggroArea.update(self)
 		self.collide(0, 0, platforms, player, billybullets)
-		self.animate(self.state)
+		self.animate(self.state, enemies)
 	
-	def animate(self, state):
-		if not self.standing:
+	def animate(self, state, enemies):
+		if not self.standing and not self.dying:
 			self.lugeja+=1
 			if self.lugeja == 6:
 				if self.index != 3:
 					self.index+= 1
 				else:
-					self.index= 0
+					self.index = 0
 				self.lugeja= 0
-		elif self.standing:
+		elif self.standing and not self.dying:
 			self.lugeja = 0
 			self.index = 0
+		elif self.dying:
+			self.lugeja+=1
+			if self.lugeja == 6:
+				if self.index != 4:
+					self.index+= 1
+					self.lugeja= 0
+				else:
+					enemies.remove(self)
+				
 		self.image= self.imagedict[state][self.index]
 		
 	def collide(self, xvel, yvel, platforms, player, billybullets):
@@ -287,29 +314,31 @@ class Hillbilly(sprite.Sprite):
 						self.rect.top = p.rect.bottom
 						self.yvel += 1
 		else:
-			if pygame.sprite.collide_rect(self.aggroArea, player):
-				deltax = player.rect.x - self.rect.x-38
-				if deltax > 0:
-					self.standing = True
-					self.xvel = 0
-					self.state = "imgRstand"
-					self.dir = "right"
-					self.shoot(billybullets)
-				else:
-					self.standing = True
-					self.xvel = 0
-					self.state = "imgLstand"
-					self.dir = "left"
-					self.shoot(billybullets)
+			if not self.dying:
+				if pygame.sprite.collide_rect(self.aggroArea, player):
+					deltax = player.rect.x - self.rect.x-38
+					if deltax > 0:
+						self.standing = True
+						self.xvel = 0
+						self.state = "imgRstand"
+						self.dir = "right"
+						self.shoot(billybullets)
+					else:
+						self.standing = True
+						self.xvel = 0
+						self.state = "imgLstand"
+						self.dir = "left"
+						self.shoot(billybullets)
 			else:
-				if self.dir == "right":
-					self.standing = False
-					self.xvel = 2
-					self.state = "imgR"
-				elif self.dir == "left":
-					self.standing = False
-					self.xvel = -2
-					self.state = "imgL"
+				if not self.dying:
+					if self.dir == "right":
+						self.standing = False
+						self.xvel = 2
+						self.state = "imgR"
+					elif self.dir == "left":
+						self.standing = False
+						self.xvel = -2
+						self.state = "imgL"
 		
 		if pygame.sprite.collide_rect(self, player):
 			if self.dir == "right":
@@ -324,7 +353,7 @@ class Hillbilly(sprite.Sprite):
 		elif self.dir == "right":
 			speed = 3
 			offset = 64
-		if self.reload == 50:
+		if self.reload == 80:
 			self.shootsound.play()
 			for i in range(-1,2):
 				bullet = HillBullet(self.dir, i)
@@ -333,8 +362,7 @@ class Hillbilly(sprite.Sprite):
 				billybullets.add(bullet)
 			self.reload = 0
 		else:
-			self.reload+=1
-		
+			self.reload+=1	
 		
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
@@ -613,6 +641,9 @@ class Voidball(sprite.Sprite):
 		self.lugeja = 0
 		self.decaytimer=0
 		self.speed = speed
+		self.blastsound = pygame.mixer.Sound("res/vortex.wav")
+		self.blastchannel = mixer.Channel(7)
+		self.blastsound.set_volume(0.4)
 		
 	def update(self, anim_list, enemylist, proj_list, platforms):
 		self.decaytimer+=1
@@ -623,8 +654,6 @@ class Voidball(sprite.Sprite):
 		fire.rect.x = self.rect.x + 24
 		fire.rect.y = self.rect.y + 24
 		anim_list.add(fire)
-		self.blastsound = pygame.mixer.Sound("res/vortex.wav")
-		self.blastsound.set_volume(0.4)
 		if self.lugeja == 4:
 			if self.decaytimer < 125:
 				if self.index != 5:
@@ -653,14 +682,16 @@ class Voidball(sprite.Sprite):
 
 	def collision(self, enemies, anim_list, proj_list, platforms):
 		for en in enemies:
-			if pygame.sprite.collide_rect(self, en):	
+			if pygame.sprite.collide_rect(self, en):
+				en.xvel -= (en.rect.x -self.rect.x) / 20		
 				proj_list.remove(self)
 				blast = Voidblast()
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
 				en.hp -= self.damage
-				self.blastsound.play()
+				if not self.blastchannel.get_busy():
+					self.blastchannel.play(self.blastsound)
 		
 		for p in platforms:
 			if pygame.sprite.collide_rect(self, p):
@@ -669,7 +700,8 @@ class Voidball(sprite.Sprite):
 				blast.rect.x = self.rect.x-48
 				blast.rect.y = self.rect.y-48
 				proj_list.add(blast)
-				self.blastsound.play()
+				if not self.blastchannel.get_busy():
+					self.blastchannel.play(self.blastsound)
 
 class Voidblast(sprite.Sprite):
 	def __init__(self):
