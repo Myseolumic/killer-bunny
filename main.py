@@ -202,31 +202,31 @@ class Dog(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
 		self.imagesR= [image.load("res/dogeRun1R.png").convert_alpha(),
-						image.load("res/dogeRun2R.png").convert_alpha(),
 						image.load("res/dogeRun3R.png").convert_alpha(),
-						image.load("res/dogeRun4R.png").convert_alpha(),
 						image.load("res/dogeRun5R.png").convert_alpha(),
-						image.load("res/dogeRun6R.png").convert_alpha()]
+						image.load("res/dogeRun1R.png").convert_alpha(),
+						image.load("res/dogeRun3R.png").convert_alpha(),
+						image.load("res/dogeRun5R.png").convert_alpha()]
 		
 		self.imagesL= [image.load("res/dogeRun1L.png").convert_alpha(),
-						image.load("res/dogeRun2L.png").convert_alpha(),
 						image.load("res/dogeRun3L.png").convert_alpha(),
-						image.load("res/dogeRun4L.png").convert_alpha(),
 						image.load("res/dogeRun5L.png").convert_alpha(),
-						image.load("res/dogeRun6L.png").convert_alpha()]
+						image.load("res/dogeRun1L.png").convert_alpha(),
+						image.load("res/dogeRun3L.png").convert_alpha(),
+						image.load("res/dogeRun5L.png").convert_alpha()]
 						
 		self.standimagesR= [image.load("res/dogeStand0R.png").convert_alpha(),
 							image.load("res/dogeStand1R.png").convert_alpha(),
+							image.load("res/dogeStand0R.png").convert_alpha(),
 							image.load("res/dogeStand2R.png").convert_alpha(),
 							image.load("res/dogeStand3R.png").convert_alpha(),
-							image.load("res/dogeStand1R.png").convert_alpha(),
 							image.load("res/dogeStand2R.png").convert_alpha()]
 		
 		self.standimagesL= [image.load("res/dogeStand0L.png").convert_alpha(),
 							image.load("res/dogeStand1L.png").convert_alpha(),
+							image.load("res/dogeStand0L.png").convert_alpha(),
 							image.load("res/dogeStand2L.png").convert_alpha(),
 							image.load("res/dogeStand3L.png").convert_alpha(),
-							image.load("res/dogeStand1L.png").convert_alpha(),
 							image.load("res/dogeStand2L.png").convert_alpha()]
 						
 		self.imagedict= {"imgR": self.imagesR, "imgL": self.imagesL, "imgRstand": self.standimagesR, "imgLstand": self.standimagesL}
@@ -314,12 +314,12 @@ class Dog(sprite.Sprite):
 					deltax = player.rect.x - self.rect.x-38
 					if deltax > 0:
 						self.standing = False
-						self.xvel = 3
+						self.xvel = 4
 						self.state = "imgR"
 						self.dir = "right"
 					else:
 						self.standing = False
-						self.xvel = -3
+						self.xvel = -4
 						self.state = "imgL"
 						self.dir = "left"
 				else:
