@@ -158,36 +158,6 @@ def main():
 		billybullets.update(world, billybullets, player)
 		display.flip()
 		
-class HillBullet(sprite.Sprite):
-	def __init__(self, dir, ycord):
-		sprite.Sprite.__init__(self)
-		self.imagelist = [image.load("res/bullet.png").convert_alpha(),
-							image.load("res/bulletL.png").convert_alpha()]
-		self.index = 0
-		self.image = self.imagelist[self.index]
-		self.rect = self.image.get_rect()
-		self.direction = dir
-		self.ymovement = ycord
-	
-	def update(self, world, billybullets, player):
-		if self.direction == "right":
-			self.rect.x += 14
-			self.rect.y += self.ymovement + randint(-2,2)
-			self.image = self.imagelist[0]
-		elif self.direction == "left":
-			self.rect.x -= 14
-			self.rect.y += self.ymovement + randint(-2,2)
-			self.image = self.imagelist[1]
-		for p in world:
-			if pygame.sprite.collide_rect(self, p):
-				billybullets.remove(self)
-		if pygame.sprite.collide_rect(self, player):
-			if not player.ducking:
-				if player.hp-1 > 0:
-					player.hp -= 1
-				else:
-					player.hp = 1				
-
 class Tile(sprite.Sprite):
 	def __init__(self,x,y,img):
 		sprite.Sprite.__init__(self)
