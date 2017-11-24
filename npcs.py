@@ -154,12 +154,12 @@ class Dog(sprite.Sprite):
 			
 			if pygame.sprite.collide_rect(self, player):
 				if self.dir == "right":
-					player.rect.x+= 3
-					player.i_time = 45 #invincibility
+					if player.i_time == 0:
+						player.getHurt(10)
 				elif self.dir == "left":
-					player.rect.x-=3
-					player.i_time = 45 #invincibility
-
+					if player.i_time == 0:
+						player.getHurt(10)
+						
 class Hillbilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)

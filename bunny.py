@@ -250,14 +250,19 @@ class Player(sprite.Sprite):
 			self.alpha = 255
 			self.image.set_alpha(255)
 		if self.i_time > 0:
-			if self.vahe == 2:
-				self.i_var -= 75
+			if self.vahe == 2 or self.vahe == 4 or self.vahe == 6:
+				self.i_var -= 70
 				self.alpha = abs(self.i_var)
 				if self.alpha >= 255:
 					self.i_var = 255
 				self.i_time -= 1
 				self.image.set_alpha(self.alpha)
-	
+	def getHurt(self, dmg):
+		if self.hp - dmg > 0:
+			self.hp -= dmg
+			self.i_time = 45
+		else:
+			self.hp = 2
 
 class Smoke(sprite.Sprite):
 	def __init__(self):
