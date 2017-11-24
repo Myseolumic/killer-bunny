@@ -2,31 +2,32 @@ import sys, pygame
 from pygame import *
 from numpy import *
 from random import *
+from math import *
 
 class Player(sprite.Sprite):
 	def __init__(self, width, height):
 		sprite.Sprite.__init__(self)
-		self.stand_imagesR= [image.load("res/Stand_R.png").convert_alpha(),
-							image.load("res/Stand_R2.png").convert_alpha(),
-							image.load("res/Stand_R3.png").convert_alpha(),
-							image.load("res/Stand_R4.png").convert_alpha()]
+		self.stand_imagesR= [image.load("res/Stand_R.png").convert(),
+							image.load("res/Stand_R2.png").convert(),
+							image.load("res/Stand_R3.png").convert(),
+							image.load("res/Stand_R4.png").convert()]
 		
-		self.stand_imagesL= [image.load("res/Stand_L.png").convert_alpha(),
-							image.load("res/Stand_L2.png").convert_alpha(),
-							image.load("res/Stand_L3.png").convert_alpha(),
-							image.load("res/Stand_L4.png").convert_alpha()]
+		self.stand_imagesL= [image.load("res/Stand_L.png").convert(),
+							image.load("res/Stand_L2.png").convert(),
+							image.load("res/Stand_L3.png").convert(),
+							image.load("res/Stand_L4.png").convert()]
 							
-		self.run_imagesR= [image.load("res/0R.png").convert_alpha(),
-							image.load("res/1R.png").convert_alpha(),
-							image.load("res/2R.png").convert_alpha(),
-							image.load("res/3R.png").convert_alpha(),
-							image.load("res/4R.png").convert_alpha()]
+		self.run_imagesR= [image.load("res/0R.png").convert(),
+							image.load("res/1R.png").convert(),
+							image.load("res/2R.png").convert(),
+							image.load("res/3R.png").convert(),
+							image.load("res/4R.png").convert()]
 		
-		self.run_imagesL= [image.load("res/0L.png").convert_alpha(),
-							image.load("res/1L.png").convert_alpha(),
-							image.load("res/2L.png").convert_alpha(),
-							image.load("res/3L.png").convert_alpha(),
-							image.load("res/4L.png").convert_alpha()]
+		self.run_imagesL= [image.load("res/0L.png").convert(),
+							image.load("res/1L.png").convert(),
+							image.load("res/2L.png").convert(),
+							image.load("res/3L.png").convert(),
+							image.load("res/4L.png").convert()]
 							
 		self.duck_imagesR= [image.load("res/Ducking_R.png").convert_alpha(),
 							image.load("res/Ducking_R.png").convert_alpha(),
@@ -108,6 +109,10 @@ class Player(sprite.Sprite):
 		self.firechannel = mixer.Channel(5)
 		self.fire_sound = pygame.mixer.Sound('res/fire.wav')
 		self.projspawn= pygame.mixer.Sound("res/proj.wav")
+		#invincibility jaoks
+		self.i_var = 0 
+		self.i_time = 0
+		self.alpha = 1
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
@@ -217,8 +222,12 @@ class Player(sprite.Sprite):
 			self.index+=1
 			if self.index >= len(self.dict.get(key)):
 				self.index = 0
+			temp_alpha = self.image.get_alpha()
 			self.image = self.dict.get(key)[self.index]
+			self.image.set_colorkey((255,255,255))
+			self.image.set_alpha(temp_alpha)
 			self.vahe = 0
+		self.invincibility()
 	
 	def collide(self, xvel, yvel, platforms):
 		for p in platforms:
@@ -235,6 +244,20 @@ class Player(sprite.Sprite):
 				if yvel < 0:
 					self.rect.top = p.rect.bottom
 					self.yvel += 1
+	def invincibility(self):
+		if self.i_time == 0:
+			self.i_var = 255
+			self.alpha = 255
+			self.image.set_alpha(255)
+		if self.i_time > 0:
+			if self.vahe == 2:
+				self.i_var -= 75
+				self.alpha = abs(self.i_var)
+				if self.alpha >= 255:
+					self.i_var = 255
+				self.i_time -= 1
+				self.image.set_alpha(self.alpha)
+	
 
 class Smoke(sprite.Sprite):
 	def __init__(self):
