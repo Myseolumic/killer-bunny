@@ -293,11 +293,11 @@ class Hillbilly(sprite.Sprite):
 					self.reload = 79
 					if self.dir == "right":
 						self.standing = False
-						self.xvel = 4
+						self.xvel = 2
 						self.state = "imgR"
 					elif self.dir == "left":
 						self.standing = False
-						self.xvel = -4
+						self.xvel = -2
 						self.state = "imgL"
 			
 			if pygame.sprite.collide_rect(self, player):
@@ -349,7 +349,7 @@ class HillBullet(sprite.Sprite):
 				billybullets.remove(self)
 		if pygame.sprite.collide_rect(self, player):
 			if not player.ducking:
-				if player.hp-1 > 0:
-					player.hp -= 1
+				if player.hp-2 > 0:
+					player.hp -= 2
 				else:
 					player.hp = 1				
