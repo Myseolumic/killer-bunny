@@ -35,6 +35,7 @@ def main():
 	W_height = generation[2][1]
 	tokens = generation[3] #chillies
 	endblock = generation[5] #4 on vastastele
+	endblock.id = 1
 	
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
@@ -65,47 +66,79 @@ def main():
 		#background render
 		screen.blit(background,(0-CameraX/4,0-CameraY/4))
 		
-		for e in event.get():
-			if e.type == QUIT:
-				sys.exit()
-			if e.type == KEYUP and e.key == K_SPACE:
-				shoot = False
-				player.charged = True
-			if e.type == KEYDOWN and e.key == K_ESCAPE:
-				sys.exit()
-			if e.type == KEYUP and e.key == K_UP:
-				up = False
-				player.jumped = True #muidu teeb hüppe kohe ära
-			if e.type == KEYUP and e.key == K_DOWN:
-				down = False
-				player.ducking = False
-			if e.type == KEYUP and e.key == K_RIGHT:
-				right = False
-				was_right= True
-				was_left= False
-				current_state = "standR"
-			if e.type == KEYUP and e.key == K_LEFT:
-				left = False
-				was_left= True
-				was_right= False
-				current_state = "standL"
-			if e.type == KEYDOWN and e.key == K_UP:
-				up = True
-			if e.type == KEYDOWN and e.key == K_DOWN:
-				down = True
-				player.ducking = True
-			if e.type == KEYDOWN and e.key == K_LEFT:
-				left = True
-				was_left= True
-				was_right= False
-			if e.type == KEYDOWN and e.key == K_RIGHT:
-				right = True
-				was_right= True
-				was_left= False
-			if e.type == KEYDOWN and e.key == K_SPACE:
-				shoot = True
+		#new world loading
+		if endblock.next:
+			endblock.next = False
+			endblock.id += 1
+			generation = gen_world("res/springs"+str(endblock.id)+".png")
+			world = generation[0]
+			player = generation[1]
+			W_width = generation[2][0]
+			W_height = generation[2][1]
+			tokens = generation[3]
+			enemies = generation[4]
+						
+			anim_list.empty()
+			smoke_list.empty()
+			proj_list.empty()
+			billybullets.empty()
+			
+			endblock_data = generation[5]
+			endblock.rect = endblock_data.rect
+			CameraX = 0
+			CameraY = 200
+			while endblock.alpha > 0:
+				endblock.blackScreen(-1)
+		
+		if player.controlsEnabled :
+			for e in event.get():
+				if e.type == QUIT:
+					sys.exit()
+				if e.type == KEYUP and e.key == K_SPACE:
+					shoot = False
+					player.charged = True
+				if e.type == KEYDOWN and e.key == K_ESCAPE:
+					sys.exit()
+				if e.type == KEYUP and e.key == K_UP:
+					up = False
+					player.jumped = True #muidu teeb hüppe kohe ära
+				if e.type == KEYUP and e.key == K_DOWN:
+					down = False
+					player.ducking = False
+				if e.type == KEYUP and e.key == K_RIGHT:
+					right = False
+					was_right= True
+					was_left= False
+					current_state = "standR"
+				if e.type == KEYUP and e.key == K_LEFT:
+					left = False
+					was_left= True
+					was_right= False
+					current_state = "standL"
+				if e.type == KEYDOWN and e.key == K_UP:
+					up = True
+				if e.type == KEYDOWN and e.key == K_DOWN:
+					down = True
+					player.ducking = True
+				if e.type == KEYDOWN and e.key == K_LEFT:
+					left = True
+					was_left= True
+					was_right= False
+				if e.type == KEYDOWN and e.key == K_RIGHT:
+					right = True
+					was_right= True
+					was_left= False
+				if e.type == KEYDOWN and e.key == K_SPACE:
+					shoot = True
+		else:
+			right = False
+			was_right= True
+			was_left= False
+			current_state = "standR"
 		
 		player.rect = player.rect.move(speed)
+		
+		#Camera movement
 		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
 			CameraX += 4
 		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32:
@@ -160,7 +193,9 @@ def main():
 		enemies.update(world, player,billybullets, enemies)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
+		
 		endblock.update(player, screen, CameraX, CameraY)
+		
 		display.flip()
 		
 class Tile(sprite.Sprite):
@@ -176,33 +211,37 @@ class Finish(sprite.Sprite):
 		self.rect = self.image.get_rect().move(32*x, 32*y)
 		
 		self.screensaver = Surface((W_width,W_height))
+		self.screensaver.fill((0,0,0))
 		self.screensaver_rect = self.screensaver.get_rect()
+		self.screensaver.set_alpha(70)
 		self.alpha = 0
 		self.vahe = 0
 		self.next = False
+		self.id = 1
 	
 	def update(self, player, screen, CameraX, CameraY):
-		screen.blit(self.screensaver,(self.screensaver_rect.x -CameraX, self.screensaver_rect.y -CameraY))
-		self.collide(player)
-	
-	def collide(self, player):
-		if sprite.collide_rect(self, player):
-			self.transfer("world2")
+		deltax = player.rect.x - self.rect.x
+
+		if sprite.collide_rect(self, player) and deltax >= 20:
+			self.screensaver_rect.x = CameraX
+			self.screensaver_rect.y = CameraY
+			player.controlsEnabled = False
+			self.blackScreen(1)
+			screen.blit(self.screensaver, (self.screensaver_rect.x-CameraX, self.screensaver_rect.y-CameraY))
+			if self.next :
+				print("Loading!")
 			
-	def blackScreen(self):
+	def blackScreen(self, value):
 		self.vahe += 1
 		if self.vahe == 3:
-			print("called", self.vahe, self.alpha)
-			self.alpha += 30
+			self.alpha += 10 * value
 			if self.alpha >= 255:
-				self.alpha = 0
 				self.next = True
+			if self.alpha <= 0 :
+				self.alpha = 0
 			self.vahe = 0
 			self.screensaver.set_alpha(self.alpha)
-			
-	def transfer(self, target):
-		self.blackScreen()
-		
+				
 class Chilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
@@ -287,7 +326,7 @@ def gen_world(filename):
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
-				finish = Finish(i,j,"res/Cave.png",800,600) #screen width, height
+				finish = Finish(i,j,"res/Cave.png",800,640) #screen width, height
 			if(b==150):
 				hillbilly = Hillbilly(i*32,j*32)
 				enemies.add(hillbilly)
