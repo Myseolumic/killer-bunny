@@ -34,6 +34,7 @@ def main():
 	W_width = generation[2][0]
 	W_height = generation[2][1]
 	tokens = generation[3] #chillies
+	endblock = generation[5] #4 on vastastele
 	
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
@@ -147,6 +148,9 @@ def main():
 			if smoke.imgcount == 6:
 				smoke_list.remove(smoke)
 		
+		#finish
+		screen.blit(endblock.image,(endblock.rect.x -CameraX,endblock.rect.y -CameraY))
+		
 		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY)
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
@@ -156,6 +160,7 @@ def main():
 		enemies.update(world, player,billybullets, enemies)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
+		endblock.update(player, screen, CameraX, CameraY)
 		display.flip()
 		
 class Tile(sprite.Sprite):
@@ -165,11 +170,39 @@ class Tile(sprite.Sprite):
 		self.rect = self.image.get_rect().move(32*x, 32*y)
 
 class Finish(sprite.Sprite):
-	def __init__(self,x,y,img):
+	def __init__(self,x,y,img, W_width, W_height):
 		sprite.Sprite.__init__(self)
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
-
+		
+		self.screensaver = Surface((W_width,W_height))
+		self.screensaver_rect = self.screensaver.get_rect()
+		self.alpha = 0
+		self.vahe = 0
+		self.next = False
+	
+	def update(self, player, screen, CameraX, CameraY):
+		screen.blit(self.screensaver,(self.screensaver_rect.x -CameraX, self.screensaver_rect.y -CameraY))
+		self.collide(player)
+	
+	def collide(self, player):
+		if sprite.collide_rect(self, player):
+			self.transfer("world2")
+			
+	def blackScreen(self):
+		self.vahe += 1
+		if self.vahe == 3:
+			print("called", self.vahe, self.alpha)
+			self.alpha += 30
+			if self.alpha >= 255:
+				self.alpha = 0
+				self.next = True
+			self.vahe = 0
+			self.screensaver.set_alpha(self.alpha)
+			
+	def transfer(self, target):
+		self.blackScreen()
+		
 class Chilly(sprite.Sprite):
 	def __init__(self,x,y):
 		sprite.Sprite.__init__(self)
@@ -254,7 +287,7 @@ def gen_world(filename):
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
-				token_list.add(Finish(i,j,"res/Cave.png"))
+				finish = Finish(i,j,"res/Cave.png",800,600) #screen width, height
 			if(b==150):
 				hillbilly = Hillbilly(i*32,j*32)
 				enemies.add(hillbilly)
@@ -267,7 +300,8 @@ def gen_world(filename):
 	newlist.append([world_width*32, world_height*32])
 	newlist.append(token_list)
 	newlist.append(enemies)
-			
+	newlist.append(finish)
+	
 	return newlist
 
 main()

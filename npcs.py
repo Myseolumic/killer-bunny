@@ -66,6 +66,7 @@ class Dog(sprite.Sprite):
 		
 	def update(self, platforms, player, billybullets, enemies):
 		if self.hp <= 0:
+			self.kill()
 			print("dead doggie")
 			#self.dying = True
 			#if self.state != "imgRdeath" and self.state != "imgLdeath":
@@ -132,12 +133,12 @@ class Dog(sprite.Sprite):
 			else:
 				if pygame.sprite.collide_rect(self.aggroArea, player):
 					deltax = player.rect.x - self.rect.x-38
-					if deltax > 0:
+					if deltax > 20:
 						self.standing = False
 						self.xvel = 4
 						self.state = "imgR"
 						self.dir = "right"
-					else:
+					elif deltax < -20:
 						self.standing = False
 						self.xvel = -4
 						self.state = "imgL"
