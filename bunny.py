@@ -113,6 +113,8 @@ class Player(sprite.Sprite):
 		self.i_var = 0 
 		self.i_time = 0
 		self.alpha = 1
+		#finish
+		self.controlsEnabled = True
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
