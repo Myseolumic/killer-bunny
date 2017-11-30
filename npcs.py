@@ -12,11 +12,11 @@ class AggroRect(sprite.Sprite):
 		self.image = Surface((self.width + parent.rect.width, parent.rect.height+self.height))
 		self.image.fill((255,255,0))
 		self.image.set_colorkey((255,255,0))
-		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y)
+		self.rect = self.image.get_rect().move(parent.rect.x, parent.rect.y+self.height)
 
 	def update(self, parent):
 		self.rect.x = parent.rect.x-self.width/2
-		self.rect.y = parent.rect.y-self.height
+		self.rect.y = parent.rect.y-self.height/2
 
 class Dog(sprite.Sprite):
 	def __init__(self,x,y):
@@ -57,14 +57,16 @@ class Dog(sprite.Sprite):
 		self.image= self.imagedict["imgLstand"][self.index]
 		self.rect= self.image.get_rect().move((x,y))
 		self.onGround = False
+		self.canjump=False
 		self.dir = "left"
 		self.hp = 40
 		self.yvel=0
 		self.xvel=0
-		self.aggroArea = AggroRect(self, 500, 0)
+		self.aggroArea = AggroRect(self, 500, 200)
 		self.dying = False
 		
 	def update(self, platforms, player, billybullets, enemies):
+		print(self.rect.y)
 		if self.hp <= 0:
 			self.kill()
 			print("dead doggie")
@@ -117,19 +119,27 @@ class Dog(sprite.Sprite):
 							self.image = self.imagedict[self.state][self.index]
 							self.rect.x -= 2
 							self.xvel = -1
+							if self.onGround:
+								self.canjump = True
 						if xvel < 0:
 							self.state = "imgR"
 							self.dir = "right"
 							self.image = self.imagedict[self.state][self.index]
 							self.xvel = 1
 							self.rect.x += 2
+							if self.onGround:
+								self.canjump = True
 						if yvel > 0:
 							self.rect.bottom = p.rect.top
 							self.onGround = True
 							self.yvel = 0
 						if yvel < 0:
 							self.rect.top = p.rect.bottom
-							self.yvel += 1
+							self.yvel = -self.yvel
+							self.onGround = False
+				if self.canjump:
+					self.yvel +=-3
+					self.canjump = False
 			else:
 				if pygame.sprite.collide_rect(self.aggroArea, player):
 					deltax = player.rect.x - self.rect.x-38
@@ -157,9 +167,11 @@ class Dog(sprite.Sprite):
 				if self.dir == "right":
 					if player.i_time == 0:
 						player.getHurt(10)
+						player.yvel = -5
 				elif self.dir == "left":
 					if player.i_time == 0:
 						player.getHurt(10)
+						player.yvel = -5
 						
 class Hillbilly(sprite.Sprite):
 	def __init__(self,x,y):
@@ -291,7 +303,7 @@ class Hillbilly(sprite.Sprite):
 						self.dir = "left"
 						self.shoot(billybullets)
 				else:
-					self.reload = 79
+					self.reload = 50
 					if self.dir == "right":
 						self.standing = False
 						self.xvel = 2

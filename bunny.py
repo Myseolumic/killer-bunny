@@ -29,65 +29,75 @@ class Player(sprite.Sprite):
 							image.load("res/3L.png").convert(),
 							image.load("res/4L.png").convert()]
 							
-		self.duck_imagesR= [image.load("res/Ducking_R.png").convert_alpha(),
-							image.load("res/Ducking_R.png").convert_alpha(),
-							image.load("res/Ducking_R.png").convert_alpha(),
-							image.load("res/Ducking_R.png").convert_alpha(),
-							image.load("res/Ducking_R.png").convert_alpha(),
-							image.load("res/Ducking_R2.png").convert_alpha(),
-							image.load("res/Ducking_R3.png").convert_alpha(),
-							image.load("res/Ducking_R4.png").convert_alpha(),
-							image.load("res/Ducking_R4.png").convert_alpha(),
-							image.load("res/Ducking_R4.png").convert_alpha(),
-							image.load("res/Ducking_R4.png").convert_alpha(),
-							image.load("res/Ducking_R4.png").convert_alpha(),
-							image.load("res/Ducking_R3.png").convert_alpha(),
-							image.load("res/Ducking_R2.png").convert_alpha()]
+		self.duck_imagesR= [image.load("res/Ducking_R.png").convert(),
+							image.load("res/Ducking_R.png").convert(),
+							image.load("res/Ducking_R.png").convert(),
+							image.load("res/Ducking_R.png").convert(),
+							image.load("res/Ducking_R.png").convert(),
+							image.load("res/Ducking_R2.png").convert(),
+							image.load("res/Ducking_R3.png").convert(),
+							image.load("res/Ducking_R4.png").convert(),
+							image.load("res/Ducking_R4.png").convert(),
+							image.load("res/Ducking_R4.png").convert(),
+							image.load("res/Ducking_R4.png").convert(),
+							image.load("res/Ducking_R4.png").convert(),
+							image.load("res/Ducking_R3.png").convert(),
+							image.load("res/Ducking_R2.png").convert()]
 		
-		self.duck_imagesL= [image.load("res/Ducking_L.png").convert_alpha(),
-							image.load("res/Ducking_L.png").convert_alpha(),
-							image.load("res/Ducking_L.png").convert_alpha(),
-							image.load("res/Ducking_L.png").convert_alpha(),
-							image.load("res/Ducking_L.png").convert_alpha(),
-							image.load("res/Ducking_L2.png").convert_alpha(),
-							image.load("res/Ducking_L3.png").convert_alpha(),
-							image.load("res/Ducking_L4.png").convert_alpha(),
-							image.load("res/Ducking_L4.png").convert_alpha(),
-							image.load("res/Ducking_L4.png").convert_alpha(),
-							image.load("res/Ducking_L4.png").convert_alpha(),
-							image.load("res/Ducking_L4.png").convert_alpha(),
-							image.load("res/Ducking_L3.png").convert_alpha(),
-							image.load("res/Ducking_L2.png").convert_alpha()]
+		self.duck_imagesL= [image.load("res/Ducking_L.png").convert(),
+							image.load("res/Ducking_L.png").convert(),
+							image.load("res/Ducking_L.png").convert(),
+							image.load("res/Ducking_L.png").convert(),
+							image.load("res/Ducking_L.png").convert(),
+							image.load("res/Ducking_L2.png").convert(),
+							image.load("res/Ducking_L3.png").convert(),
+							image.load("res/Ducking_L4.png").convert(),
+							image.load("res/Ducking_L4.png").convert(),
+							image.load("res/Ducking_L4.png").convert(),
+							image.load("res/Ducking_L4.png").convert(),
+							image.load("res/Ducking_L4.png").convert(),
+							image.load("res/Ducking_L3.png").convert(),
+							image.load("res/Ducking_L2.png").convert()]
 							
-		self.shoot_imagesR=[image.load("res/charge1.png").convert_alpha(),
-							image.load("res/charge2.png").convert_alpha(),
-							image.load("res/charge3.png").convert_alpha(),
-							image.load("res/charge4.png").convert_alpha(),
-							image.load("res/charge5.png").convert_alpha(),
-							image.load("res/charge6.png").convert_alpha(),
-							image.load("res/charge7.png").convert_alpha(),
-							image.load("res/charge8.png").convert_alpha()]
+		self.shoot_imagesR=[image.load("res/charge1.png").convert(),
+							image.load("res/charge2.png").convert(),
+							image.load("res/charge3.png").convert(),
+							image.load("res/charge4.png").convert(),
+							image.load("res/charge5.png").convert(),
+							image.load("res/charge6.png").convert(),
+							image.load("res/charge7.png").convert(),
+							image.load("res/charge8.png").convert()]
 							
-		self.shoot_imagesL=[image.load("res/charge1L.png").convert_alpha(),
-							image.load("res/charge2L.png").convert_alpha(),
-							image.load("res/charge3L.png").convert_alpha(),
-							image.load("res/charge4L.png").convert_alpha(),
-							image.load("res/charge5L.png").convert_alpha(),
-							image.load("res/charge6L.png").convert_alpha(),
-							image.load("res/charge7L.png").convert_alpha(),
-							image.load("res/charge8L.png").convert_alpha()]
+		self.shoot_imagesL=[image.load("res/charge1L.png").convert(),
+							image.load("res/charge2L.png").convert(),
+							image.load("res/charge3L.png").convert(),
+							image.load("res/charge4L.png").convert(),
+							image.load("res/charge5L.png").convert(),
+							image.load("res/charge6L.png").convert(),
+							image.load("res/charge7L.png").convert(),
+							image.load("res/charge8L.png").convert()]
 							
-		self.charged_imagesR=[image.load("res/charged1.png").convert_alpha(),
-							image.load("res/charged2.png").convert_alpha(),
-							image.load("res/charged3.png").convert_alpha(),
-							image.load("res/charged4.png").convert_alpha()]
+		self.charged_imagesR=[image.load("res/charged1.png").convert(),
+							image.load("res/charged2.png").convert(),
+							image.load("res/charged3.png").convert(),
+							image.load("res/charged4.png").convert()]
 							
-		self.charged_imagesL=[image.load("res/charged1L.png").convert_alpha(),
-							image.load("res/charged2L.png").convert_alpha(),
-							image.load("res/charged3L.png").convert_alpha(),
-							image.load("res/charged4L.png").convert_alpha()]
+		self.charged_imagesL=[image.load("res/charged1L.png").convert(),
+							image.load("res/charged2L.png").convert(),
+							image.load("res/charged3L.png").convert(),
+							image.load("res/charged4L.png").convert()]
 							
-		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL, "chargedR": self.charged_imagesR, "chargedL": self.charged_imagesL}
+		self.chargedRun_imagesR=[image.load("res/chargedMR1.png").convert(),
+							image.load("res/chargedMR2.png").convert(),
+							image.load("res/chargedMR3.png").convert(),
+							image.load("res/chargedMR4.png").convert()]
+							
+		self.chargedRun_imagesL=[image.load("res/chargedML1.png").convert(),
+							image.load("res/chargedML2.png").convert(),
+							image.load("res/chargedML3.png").convert(),
+							image.load("res/chargedML4.png").convert()]
+							
+		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL, "chargedR": self.charged_imagesR, "chargedL": self.charged_imagesL, "chargedRunR": self.chargedRun_imagesR, "chargedRunL": self.chargedRun_imagesL}
 		self.xvel = 0
 		self.yvel = 0
 		self.hp = 100
@@ -102,8 +112,10 @@ class Player(sprite.Sprite):
 		self.image = self.stand_imagesR[self.index]
 		self.rect = self.image.get_rect()
 		self.vahe=0
-		self.projdmg = 0
+		self.chargelevel = 0
 		self.ducking = False
+		self.voidballin = False
+		self.blastin=False
 		self.jump_sound = pygame.mixer.Sound('res/hupe.wav')
 		self.Djump_sound = pygame.mixer.Sound('res/Jumpsound.wav')
 		self.firechannel = mixer.Channel(5)
@@ -119,19 +131,61 @@ class Player(sprite.Sprite):
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
 		
-		if not shoot:
+		if not shoot and not self.charged:
 			if self.mana < self.maxmana:
-				self.mana+=0.2
-		#self.hp-=(1/30)
+				self.mana+=0.25
+		if self.charged and self.hp > 1:
+			self.hp-=(self.chargelevel * 0.0025)
+			if was_left:
+				current_state = "chargedL"
+			elif was_right:
+				current_state = "chargedR"
+		else:
+			if was_left:
+				current_state = "standL"
+			elif was_right:
+				current_state = "standR"
 		
 		#movement
+		if self.blastin:
+			if self.chargelevel >=50:
+				boom = Voidboom(self.chargelevel)
+				boom.rect.x = self.rect.x -48
+				boom.rect.y = self.rect.y -48
+				proj_list.add(boom)
+				self.projspawn.play()
+				self.charged = False
+				self.chargelevel = 0
+			else:
+				self.chargelevel = 0
+				self.charged = False
+		if self.voidballin:
+			if self.chargelevel >=50:
+				if was_left:
+					speed = -3
+				elif was_right:
+					speed = 3
+				ball = Voidball(speed, self.chargelevel)
+				ball.rect.x = self.rect.x + 6
+				ball.rect.y = self.rect.y + 15
+				proj_list.add(ball)
+				self.projspawn.play()
+				self.charged = False
+				self.chargelevel = 0
+			else:
+				self.chargelevel = 0
+				self.charged = False
 		if up:
 			if self.onGround: 
 				self.jump_sound.play()
 				self.yvel -= 10
 				self.can_jump = True
-			elif self.can_jump and self.jumped and self.mana >= 30:
-				self.mana -=30
+				if self.charged:
+					smoke = Smoke()
+					smoke.rect.x = self.rect.x -50
+					smoke.rect.y = self.rect.y +20
+					smoke_list.add(smoke)
+			elif self.can_jump and self.jumped and self.charged:
 				self.can_jump = False
 				self.Djump_sound.play()
 				smoke = Smoke()
@@ -139,26 +193,32 @@ class Player(sprite.Sprite):
 				smoke.rect.y = self.rect.y +20
 				smoke_list.add(smoke)
 				self.yvel = -10
-		if down:
+		if down and not self.charged:
 			if was_right:
 				current_state = "duckR"
 			elif was_left:
 				current_state = "duckL"
 		if left:
-			self.xvel = -4
+			if not self.charged:
+				self.xvel = -4
+			else:
+				self.xvel = -6
 		if right:
-			self.xvel = 4
+			if not self.charged:
+				self.xvel = 4
+			else:
+				self.xvel = 6
 		if shoot and not right and not left and not down and self.yvel <= 1 and self.yvel >=-1:
 			if self.mana > 0:
 				self.mana-=1
-				self.projdmg +=2
+				self.chargelevel +=2
 				if was_left:
-					if self.projdmg < 50:
+					if self.chargelevel < 50:
 						current_state = "shootL"
 					else:
 						current_state = "chargedL"
 				elif was_right:
-					if self.projdmg < 50:
+					if self.chargelevel < 50:
 						current_state = "shootR"
 					else:
 						current_state = "chargedR"
@@ -183,22 +243,6 @@ class Player(sprite.Sprite):
 				self.fire_sound.fadeout(50)
 		else:
 			self.fire_sound.fadeout(50)
-		if self.charged or self.mana < 1 and self.mana > -1:
-			if self.projdmg >=48:
-				if was_left:
-					speed = -3
-				elif was_right:
-					speed = 3
-				ball = Voidball(speed, self.projdmg)
-				ball.rect.x = self.rect.x + 6
-				ball.rect.y = self.rect.y + 15
-				proj_list.add(ball)
-				self.projspawn.play()
-				self.charged = False
-				self.projdmg = 0
-			else:
-				self.projdmg = 0
-				self.charged = False
 		if not self.onGround:
 			self.yvel += 0.3
 			if self.yvel > 80: self.yvel = 80
@@ -206,9 +250,15 @@ class Player(sprite.Sprite):
 			self.xvel = 0
 		self.rect.left += self.xvel
 		if self.xvel > 0:
-			current_state = "runR"
+			if not self.charged:
+				current_state = "runR"
+			else:
+				current_state = "chargedRunR"
 		elif self.xvel < 0: 
-			current_state = "runL"
+			if not self.charged:
+				current_state = "runL"
+			else:
+				current_state = "chargedRunL"
 			
 		self.collide(self.xvel, 0, platforms)
 		self.rect.top += self.yvel
@@ -400,13 +450,39 @@ class Voidblast(sprite.Sprite):
 				proj_list.remove(self)
 		else:
 			self.lugeja +=1
+			
+class Voidboom(sprite.Sprite):
+	def __init__(self, dmg):
+		sprite.Sprite.__init__(self)
+		self.imagelist = [image.load("res/boom0.png").convert_alpha(),
+						image.load("res/boom1.png").convert_alpha(),
+						image.load("res/boom2.png").convert_alpha(),
+						image.load("res/boom3.png").convert_alpha(),
+						image.load("res/boom4.png").convert_alpha(),
+						image.load("res/boom5.png").convert_alpha(),
+						image.load("res/boom6.png").convert_alpha(),
+						image.load("res/boom7.png").convert_alpha()]
+		self.index = 0
+		self.image = self.imagelist[self.index]
+		self.rect = self.image.get_rect()
+		self.lugeja = 0
 
+	def update(self, list, list2, proj_list, list3):
+		if self.lugeja == 4:
+			self.lugeja = 0
+			if self.index != 7:
+				self.index+=1
+				self.image = self.imagelist[self.index]
+			else:
+				proj_list.remove(self)
+		else:
+			self.lugeja +=1
 class Fire(sprite.Sprite):
 	def __init__(self, speed, xx, yy):
 		sprite.Sprite.__init__(self)
 		self.imagelist=[image.load("res/fire.png").convert_alpha(),
 						image.load("res/fire2.png").convert_alpha(),
-						image.load("res/fire3.png").convert_alpha(),
+						image.load("res/fire3.png").convert_alpha()
 						]
 		self.image_index=0
 		self.image = self.imagelist[self.image_index]

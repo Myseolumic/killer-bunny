@@ -96,7 +96,10 @@ def main():
 					sys.exit()
 				if e.type == KEYUP and e.key == K_SPACE:
 					shoot = False
-					player.charged = True
+					if player.chargelevel >50:
+						player.charged = True
+					else:
+						player.chargelevel = 0
 				if e.type == KEYDOWN and e.key == K_ESCAPE:
 					sys.exit()
 				if e.type == KEYUP and e.key == K_UP:
@@ -109,12 +112,18 @@ def main():
 					right = False
 					was_right= True
 					was_left= False
-					current_state = "standR"
+					if not player.charged:
+						current_state = "standR"
+					else:
+						current_state = "chargedR"
 				if e.type == KEYUP and e.key == K_LEFT:
 					left = False
 					was_left= True
 					was_right= False
-					current_state = "standL"
+					if not player.charged:
+						current_state = "standL"
+					else:
+						current_state = "chargedL"
 				if e.type == KEYDOWN and e.key == K_UP:
 					up = True
 				if e.type == KEYDOWN and e.key == K_DOWN:
@@ -130,11 +139,22 @@ def main():
 					was_left= False
 				if e.type == KEYDOWN and e.key == K_SPACE:
 					shoot = True
+				if e.type == KEYUP and e.key == K_q:
+					player.voidballin = False
+				if e.type == KEYDOWN and e.key == K_q:
+					player.voidballin = True
+				if e.type == KEYUP and e.key == K_w:
+					player.blastin = False
+				if e.type == KEYDOWN and e.key == K_w:
+					player.blastin = True
 		else:
 			right = False
 			was_right= True
 			was_left= False
-			current_state = "standR"
+			if not player.charged:
+				current_state = "standR"
+			else:
+				current_state = "chargedR"
 		
 		player.rect = player.rect.move(speed)
 		
