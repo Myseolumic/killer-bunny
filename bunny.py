@@ -89,7 +89,8 @@ class Player(sprite.Sprite):
 							
 		self.dict={"standR": self.stand_imagesR, "standL": self.stand_imagesL, "runR":self.run_imagesR, "runL":self.run_imagesL, "duckL":self.duck_imagesL, "duckR":self.duck_imagesR, "shootR":self.shoot_imagesR, "shootL": self.shoot_imagesL, "chargedR": self.charged_imagesR, "chargedL": self.charged_imagesL}
 		self.xvel = 0
-		self.yvel = 0
+		self.yvel = 0 
+		self.origin = []
 		self.hp = 100
 		self.maxhp = 100
 		self.maxmana = int(84)
@@ -115,6 +116,12 @@ class Player(sprite.Sprite):
 		self.alpha = 1
 		#finish
 		self.controlsEnabled = True
+		#surm
+		self.deathScreen = Surface((802,640))
+		self.deathScreen.set_alpha(0)
+		self.deathScreen_rect = self.deathScreen.get_rect()
+		self.deathvar = 1
+		self.dead = False
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
 		current_state = anim_state
@@ -217,6 +224,20 @@ class Player(sprite.Sprite):
 		
 		#animation
 		self.animate(current_state)
+		#update deathscreen alpha
+		if self.dead:
+			next_alpha = self.deathScreen.get_alpha()+(1*self.deathvar)
+			if next_alpha >=255:
+				self.deathScreen.set_alpha(255)
+			elif next_alpha <=0:
+				self.deathScreen.set_alpha(0)
+				self.deathvar = 1
+				self.dead = False
+				self.controlsEnabled = True
+				self.hp = 100
+			else:
+				self.deathScreen.set_alpha(next_alpha)
+			
 	
 	def animate(self, key):
 		self.vahe+=1
@@ -264,7 +285,10 @@ class Player(sprite.Sprite):
 			self.hp -= dmg
 			self.i_time = 45
 		else:
-			self.hp = 2
+			self.controlsEnabled = False
+			#death animation
+			self.dead = True
+			
 
 class Smoke(sprite.Sprite):
 	def __init__(self):
