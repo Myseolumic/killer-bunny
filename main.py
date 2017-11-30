@@ -155,11 +155,30 @@ def main():
 				current_state = "standR"
 			else:
 				current_state = "chargedR"
+		elif endblock.loading:
+			print("iSuck")
+			right = False
+			was_right= True
+			was_left= False
+			current_state = "standR"
+			
+			#for closing the game
+			for e in event.get():
+				if e.type == QUIT:
+					sys.exit()
+		elif player.dead:
+			player.deathScreen_rect.x = CameraX
+			player.deathScreen_rect.y = CameraY
+			
+			#same as the comment above
+			for e in event.get():
+				if e.type == QUIT:
+					sys.exit()
 		
 		player.rect = player.rect.move(speed)
 		
 		#Camera movement
-		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width: #zoom tuleviku jaoks
+		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width:
 			CameraX += 4
 		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32:
 			CameraY += 4
@@ -204,7 +223,20 @@ def main():
 		#finish
 		screen.blit(endblock.image,(endblock.rect.x -CameraX,endblock.rect.y -CameraY))
 		
-		player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY)
+		if not player.dead:
+			player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY)
+		else:
+			up = False
+			down = False
+			left = False
+			right = False
+			if was_left:
+				#death_animation
+				player.update("standL", False, False, False, False, True, False, False, world, "standL", anim_list, smoke_list, proj_list, CameraX, CameraY)
+			else: #was_right
+				#death_animation
+				player.update("standR", False, False, False, False, False, True, False, world, "standR", anim_list, smoke_list, proj_list, CameraX, CameraY)
+		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
 		health.update(player.hp)
@@ -213,8 +245,15 @@ def main():
 		enemies.update(world, player,billybullets, enemies)
 		tokens.update()
 		billybullets.update(world, billybullets, player)
-		
 		endblock.update(player, screen, CameraX, CameraY)
+		
+		if player.dead:
+			screen.blit(player.deathScreen, (player.deathScreen_rect.x -CameraX, player.deathScreen_rect.y -CameraY))
+			speed = (0,0) #igaks juhuks
+			if player.deathScreen.get_alpha() == 255:
+				player.rect.x = player.origin[0]
+				player.rect.y = player.origin[1]
+				player.deathvar = -2
 		
 		display.flip()
 		
@@ -237,6 +276,7 @@ class Finish(sprite.Sprite):
 		self.alpha = 0
 		self.vahe = 0
 		self.next = False
+		self.loading = False
 		self.id = 1
 	
 	def update(self, player, screen, CameraX, CameraY):
@@ -246,6 +286,7 @@ class Finish(sprite.Sprite):
 			self.screensaver_rect.x = CameraX
 			self.screensaver_rect.y = CameraY
 			player.controlsEnabled = False
+			self.loading = True
 			self.blackScreen(1)
 			screen.blit(self.screensaver, (self.screensaver_rect.x-CameraX, self.screensaver_rect.y-CameraY))
 			if self.next :
@@ -310,7 +351,10 @@ class GUI_bar(sprite.Sprite):
 		self.image.fill(self.color)
 			
 def gen_world(filename):
-	img = image.load(filename)
+	try:
+		img = image.load(filename)
+	except pygame.error:
+		print("Ran out of levels, sorry :(")
 	rgbarray = surfarray.array3d(img)
 	world_width = len(rgbarray)
 	world_height = len(rgbarray[0])
@@ -342,7 +386,8 @@ def gen_world(filename):
 				entities.add(Tile(i,j,"res/dirt_top_left.png"))
 			if(g==255 and r!=255):
 				player = Player(64,64)
-				player.rect=player.rect.move([i*32,j*32])
+				player.rect = player.rect.move([i*32,j*32])
+				player.origin = [i*32,j*32]
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
