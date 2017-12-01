@@ -66,7 +66,6 @@ class Dog(sprite.Sprite):
 		self.dying = False
 		
 	def update(self, platforms, player, billybullets, enemies):
-		print(self.rect.y)
 		if self.hp <= 0:
 			self.kill()
 			print("dead doggie")

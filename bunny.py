@@ -141,8 +141,9 @@ class Player(sprite.Sprite):
 		if not shoot and not self.charged:
 			if self.mana < self.maxmana:
 				self.mana+=0.25
-		if self.charged and self.hp > 1:
-			self.hp-=(self.chargelevel * 0.0025)
+		if self.charged:
+			self.getHurt(self.charged * 0.02)
+			print(self.chargelevel * 0.02)
 			if was_left:
 				current_state = "chargedL"
 			elif was_right:
@@ -333,7 +334,8 @@ class Player(sprite.Sprite):
 	def getHurt(self, dmg):
 		if self.hp - dmg > 0:
 			self.hp -= dmg
-			self.i_time = 45
+			if not self.charged:
+				self.i_time = 45
 		else:
 			self.controlsEnabled = False
 			#death animation
