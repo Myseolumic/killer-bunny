@@ -167,6 +167,7 @@ def main():
 				if e.type == QUIT:
 					sys.exit()
 		
+		
 		player.rect = player.rect.move(speed)
 		
 		#Camera movement
