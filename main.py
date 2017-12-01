@@ -147,14 +147,6 @@ def main():
 					player.blastin = False
 				if e.type == KEYDOWN and e.key == K_w:
 					player.blastin = True
-		else:
-			right = False
-			was_right= True
-			was_left= False
-			if not player.charged:
-				current_state = "standR"
-			else:
-				current_state = "chargedR"
 		elif endblock.loading:
 			print("iSuck")
 			right = False
