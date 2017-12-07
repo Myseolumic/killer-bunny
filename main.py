@@ -148,7 +148,6 @@ def main():
 				if e.type == KEYDOWN and e.key == K_w:
 					player.blastin = True
 		elif endblock.loading:
-			print("iSuck")
 			right = False
 			was_right= True
 			was_left= False
@@ -172,11 +171,17 @@ def main():
 		
 		#Camera movement
 		if player.rect.x > size[0]//2+CameraX and CameraX < W_width-width:
-			CameraX += 4
+			if player.charged:
+				CameraX += 6
+			else:
+				CameraX += 4
 		if player.rect.y > size[1]//2+CameraY and CameraY + height < 32*32:
 			CameraY += 4
 		if player.rect.x < size[0]//2+CameraX and CameraX > 0:
-			CameraX -= 4
+			if player.charged:
+				CameraX -= 6
+			else:
+				CameraX -= 4
 		if player.rect.y < size[1]//2+CameraY and CameraY > 0:
 			CameraY -= 4
 
@@ -348,6 +353,7 @@ def gen_world(filename):
 		img = image.load(filename)
 	except pygame.error:
 		print("Ran out of levels, sorry :(")
+		sys.exit()
 	rgbarray = surfarray.array3d(img)
 	world_width = len(rgbarray)
 	world_height = len(rgbarray[0])

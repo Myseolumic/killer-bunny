@@ -143,7 +143,6 @@ class Player(sprite.Sprite):
 				self.mana+=0.25
 		if self.charged:
 			self.getHurt(self.charged * 0.02)
-			print(self.chargelevel * 0.02)
 			if was_left:
 				current_state = "chargedL"
 			elif was_right:
@@ -330,12 +329,13 @@ class Player(sprite.Sprite):
 				if self.alpha >= 255:
 					self.i_var = 255
 				self.i_time -= 1
-				self.image.set_alpha(self.alpha)
+				print(self.i_time, self.vahe)
+				if not self.charged:
+					self.image.set_alpha(self.alpha)
 	def getHurt(self, dmg):
 		if self.hp - dmg > 0:
 			self.hp -= dmg
-			if not self.charged:
-				self.i_time = 45
+			self.i_time = 45
 		else:
 			self.controlsEnabled = False
 			#death animation
