@@ -231,7 +231,7 @@ def main():
 		screen.blit(endblock.image,(endblock.rect.x -CameraX,endblock.rect.y -CameraY))
 		
 		if not player.dead:
-			player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY, spikes)
+			player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY, spikes, tokens)
 		else:
 			up = False
 			down = False
@@ -239,10 +239,10 @@ def main():
 			right = False
 			if was_left:
 				#death_animation
-				player.update("standL", False, False, False, False, True, False, False, world, "standL", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes)
+				player.update("standL", False, False, False, False, True, False, False, world, "standL", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes, tokens)
 			else: #was_right
 				#death_animation
-				player.update("standR", False, False, False, False, False, True, False, world, "standR", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes)
+				player.update("standR", False, False, False, False, False, True, False, world, "standR", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes, tokens)
 		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
