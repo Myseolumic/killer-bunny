@@ -90,6 +90,11 @@ def main():
 			while endblock.alpha > 0:
 				endblock.blackScreen(-1)
 		
+		#camera reposition if player dies
+		if player.deathScreen.get_alpha() == 255:
+			CameraX = 0
+			CameraY = 200
+		
 		if player.controlsEnabled :
 			for e in event.get():
 				if e.type == QUIT:

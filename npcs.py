@@ -132,10 +132,6 @@ class Dog(sprite.Sprite):
 							self.rect.bottom = p.rect.top
 							self.onGround = True
 							self.yvel = 0
-						if yvel < 0:
-							self.rect.top = p.rect.bottom
-							self.yvel = -self.yvel
-							self.onGround = False
 				if self.canjump:
 					self.yvel +=-3
 					self.canjump = False

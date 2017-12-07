@@ -129,7 +129,7 @@ class Player(sprite.Sprite):
 		#finish
 		self.controlsEnabled = True
 		#surm
-		self.deathScreen = Surface((802,640))
+		self.deathScreen = Surface((810,640))
 		self.deathScreen.set_alpha(0)
 		self.deathScreen_rect = self.deathScreen.get_rect()
 		self.deathvar = 1
@@ -142,7 +142,9 @@ class Player(sprite.Sprite):
 			if self.mana < self.maxmana:
 				self.mana+=0.25
 		if self.charged:
-			self.getHurt(self.charged * 0.02)
+			if self.hp - self.charged*0.02 > 0:
+				self.hp -= self.charged* 0.02
+				
 			if was_left:
 				current_state = "chargedL"
 			elif was_right:
@@ -279,12 +281,12 @@ class Player(sprite.Sprite):
 			next_alpha = self.deathScreen.get_alpha()+(1*self.deathvar)
 			if next_alpha >=255:
 				self.deathScreen.set_alpha(255)
+				self.hp = 100
 			elif next_alpha <=0:
 				self.deathScreen.set_alpha(0)
 				self.deathvar = 1
 				self.dead = False
 				self.controlsEnabled = True
-				self.hp = 100
 			else:
 				self.deathScreen.set_alpha(next_alpha)
 			
