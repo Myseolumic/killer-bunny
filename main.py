@@ -261,6 +261,12 @@ class Tile(sprite.Sprite):
 		self.image = image.load(img).convert_alpha()
 		self.rect = self.image.get_rect().move(32*x, 32*y)
 
+class Spikes(sprite.Sprite):
+	def __init__(self):
+		sprite.Sprite.__init__(self)
+		self.image = image.load("res/spikes.png").convert_alpha()
+		self.rect = self.image.get_rect()
+
 class Finish(sprite.Sprite):
 	def __init__(self,x,y,img, W_width, W_height):
 		sprite.Sprite.__init__(self)
@@ -360,6 +366,7 @@ def gen_world(filename):
 	entities = sprite.Group()
 	enemies = sprite.Group()
 	token_list = sprite.Group()
+	spikes = sprite.Group()
 	
 	newlist = []
 	

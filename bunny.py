@@ -142,7 +142,8 @@ class Player(sprite.Sprite):
 			if self.mana < self.maxmana:
 				self.mana+=0.25
 		if self.charged:
-			self.getHurt(self.charged * 0.02)
+			if self.hp > 1:
+				self.hp -= self.chargelevel*0.002
 			if was_left:
 				current_state = "chargedL"
 			elif was_right:
@@ -329,9 +330,7 @@ class Player(sprite.Sprite):
 				if self.alpha >= 255:
 					self.i_var = 255
 				self.i_time -= 1
-				print(self.i_time, self.vahe)
-				if not self.charged:
-					self.image.set_alpha(self.alpha)
+				self.image.set_alpha(self.alpha)
 	def getHurt(self, dmg):
 		if self.hp - dmg > 0:
 			self.hp -= dmg
