@@ -135,7 +135,7 @@ class Player(sprite.Sprite):
 		self.deathvar = 1
 		self.dead = False
 	
-	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY):		
+	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY, spikes):		
 		current_state = anim_state
 		
 		if not shoot and not self.charged:
@@ -143,7 +143,7 @@ class Player(sprite.Sprite):
 				self.mana+=0.25
 		if self.charged:
 			if self.hp > 1:
-				self.hp -= self.chargelevel*0.002
+				self.hp -= self.chargelevel*0.001
 			if was_left:
 				current_state = "chargedL"
 			elif was_right:
@@ -268,10 +268,10 @@ class Player(sprite.Sprite):
 			else:
 				current_state = "chargedRunL"
 			
-		self.collide(self.xvel, 0, platforms)
+		self.collide(self.xvel, 0, platforms, spikes)
 		self.rect.top += self.yvel
 		self.onGround = False;
-		self.collide(0, self.yvel, platforms)
+		self.collide(0, self.yvel, platforms, spikes)
 		
 		#animation
 		self.animate(current_state)
@@ -303,7 +303,7 @@ class Player(sprite.Sprite):
 			self.vahe = 0
 		self.invincibility()
 	
-	def collide(self, xvel, yvel, platforms):
+	def collide(self, xvel, yvel, platforms, spikes):
 		for p in platforms:
 			if pygame.sprite.collide_rect(self, p):
 				if xvel > 0:
@@ -318,6 +318,10 @@ class Player(sprite.Sprite):
 				if yvel < 0:
 					self.rect.top = p.rect.bottom
 					self.yvel += 1
+		for s in spikes:
+			if pygame.sprite.collide_rect(self, s):
+				self.getHurt(1)
+				self.yvel = -5
 	def invincibility(self):
 		if self.i_time == 0:
 			self.i_var = 255

@@ -36,6 +36,7 @@ def main():
 	tokens = generation[3] #chillies
 	endblock = generation[5] #4 on vastastele
 	endblock.id = 1
+	spikes = generation[6]
 	
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
@@ -212,6 +213,9 @@ def main():
 			
 		for chilly in tokens:
 			screen.blit(chilly.image, (chilly.rect.x -CameraX,chilly.rect.y -CameraY))
+		
+		for spike in spikes:
+			screen.blit(spike.image, (spike.rect.x -CameraX, spike.rect.y -CameraY))
 			
 		for smoke in smoke_list:
 			screen.blit(smoke.image,(smoke.rect.x -CameraX,smoke.rect.y -CameraY))
@@ -222,7 +226,7 @@ def main():
 		screen.blit(endblock.image,(endblock.rect.x -CameraX,endblock.rect.y -CameraY))
 		
 		if not player.dead:
-			player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY)
+			player.update(current_state, up, down, left, right, was_left, was_right,shoot, world, current_state, anim_list, smoke_list, proj_list, CameraX, CameraY, spikes)
 		else:
 			up = False
 			down = False
@@ -230,10 +234,10 @@ def main():
 			right = False
 			if was_left:
 				#death_animation
-				player.update("standL", False, False, False, False, True, False, False, world, "standL", anim_list, smoke_list, proj_list, CameraX, CameraY)
+				player.update("standL", False, False, False, False, True, False, False, world, "standL", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes)
 			else: #was_right
 				#death_animation
-				player.update("standR", False, False, False, False, False, True, False, world, "standR", anim_list, smoke_list, proj_list, CameraX, CameraY)
+				player.update("standR", False, False, False, False, False, True, False, world, "standR", anim_list, smoke_list, proj_list, CameraX, CameraY,spikes)
 		
 		screen.blit(player.image,(player.rect.x -CameraX,player.rect.y -CameraY))		
 		GUI.draw(screen)
@@ -394,6 +398,8 @@ def gen_world(filename):
 				player = Player(64,64)
 				player.rect = player.rect.move([i*32,j*32])
 				player.origin = [i*32,j*32]
+			if(r==169): #spiked
+				spikes.add(Tile(i,j,"res/spikes.png"))
 			if(g==200 and b==200):
 				token_list.add(Chilly(i,j))
 			if(r==255 and g==255):
@@ -411,6 +417,7 @@ def gen_world(filename):
 	newlist.append(token_list)
 	newlist.append(enemies)
 	newlist.append(finish)
+	newlist.append(spikes)
 	
 	return newlist
 
