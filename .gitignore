@@ -27,3 +27,5 @@ ext/libtool
 *.pyc
 __pycache__/bunny.cpython-36.pyc
 __pycache__/npcs.cpython-36.pyc
+__pycache__/bunny.cpython-36.pyc
+__pycache__/npcs.cpython-36.pyc
