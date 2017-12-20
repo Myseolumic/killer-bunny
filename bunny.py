@@ -134,6 +134,7 @@ class Player(sprite.Sprite):
 		self.deathScreen_rect = self.deathScreen.get_rect()
 		self.deathvar = 1
 		self.dead = False
+		self.victim_list = []
 	
 	def update(self, key, up, down, left, right, was_left, was_right, shoot, platforms, anim_state, anim_list, smoke_list, proj_list, CameraX, CameraY, spikes, tokens):		
 		current_state = anim_state
@@ -325,6 +326,7 @@ class Player(sprite.Sprite):
 		for t in tokens:
 			if pygame.sprite.collide_rect(self, t):
 				self.hp = 100
+				self.victim_list.append(["token", t.origin[0], t.origin[1]])
 				t.kill()
 			
 	def invincibility(self):

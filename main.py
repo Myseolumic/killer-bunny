@@ -95,6 +95,23 @@ def main():
 		if player.deathScreen.get_alpha() == 255:
 			CameraX = 0
 			CameraY = 200
+			
+			player.rect.x = player.origin[0]
+			player.rect.y = player.origin[1]
+			
+			#respawn dead dudes
+			for v in player.victim_list:
+				if v[0] == "dog":
+					enemies.add(Dog(v[1]*32, v[2]*32))
+					print("doge")
+				if v[0] == "hillbilly":
+					enemies.add(Hillbilly(v[1]*32, v[2]*32))
+					print("hillbilly")
+				if v[0] == "token":
+					tokens.add(Chilly(v[1], v[2]))
+					print("token")
+					
+			player.victim_list = []
 		
 		if player.controlsEnabled :
 			for e in event.get():
@@ -329,6 +346,7 @@ class Chilly(sprite.Sprite):
 		self.image = self.imagelist[self.image_index]
 		self.rect = self.image.get_rect().move(32*x,32*y)
 		self.lugeja = 0
+		self.origin = [x,y]
 	
 	def update(self):
 		self.animate()
@@ -411,9 +429,11 @@ def gen_world(filename):
 				finish = Finish(i,j,"res/Cave.png",800,640) #screen width, height
 			if(b==150):
 				hillbilly = Hillbilly(i*32,j*32)
+				hillbilly.origin = [i,j]
 				enemies.add(hillbilly)
 			if(r==205 and g==205):
 				dog = Dog(i*32,j*32)
+				dog.origin = [i,j]
 				enemies.add(dog)
 			
 	newlist.append(entities)

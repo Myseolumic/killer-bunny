@@ -64,11 +64,12 @@ class Dog(sprite.Sprite):
 		self.xvel=0
 		self.aggroArea = AggroRect(self, 500, 200)
 		self.dying = False
+		self.origin = [0,0]
 		
 	def update(self, platforms, player, billybullets, enemies):
 		if self.hp <= 0:
+			player.victim_list.append(["dog",self.origin[0], self.origin[1]])
 			self.kill()
-			print("dead doggie")
 			#self.dying = True
 			#if self.state != "imgRdeath" and self.state != "imgLdeath":
 				#self.index = 0
@@ -104,7 +105,8 @@ class Dog(sprite.Sprite):
 					self.index+= 1
 					self.lugeja= 0
 				else:
-					enemies.remove(self)		
+					self.kill()
+					#enemies.remove(self)		
 		self.image= self.imagedict[state][self.index]
 		
 	def collide(self, xvel, yvel, platforms, player, billybullets):
@@ -207,6 +209,7 @@ class Hillbilly(sprite.Sprite):
 		self.onGround = False
 		self.dir = "right"
 		self.hp = 40
+		self.origin = [0,0]
 		self.yvel=0
 		self.xvel=1
 		self.aggroArea = AggroRect(self, 500, 0)
@@ -217,6 +220,7 @@ class Hillbilly(sprite.Sprite):
 	def update(self, platforms, player, billybullets, enemies):
 		if self.hp <= 0:
 			self.dying = True
+			player.victim_list.append(["hillbilly", self.origin[0], self.origin[1]])
 			if self.state != "imgRdeath" and self.state != "imgLdeath":
 				self.index = 0
 			if self.dir == "right":
@@ -254,7 +258,8 @@ class Hillbilly(sprite.Sprite):
 					self.index+= 1
 					self.lugeja= 0
 				else:
-					enemies.remove(self)
+					self.kill()
+					#enemies.remove(self)
 				
 		self.image= self.imagedict[state][self.index]
 		
