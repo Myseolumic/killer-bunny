@@ -11,6 +11,9 @@ def main():
 	pygame.mixer.init()
 	mixer.set_num_channels(8) # 5 ja 7 kasutuses
 	init()
+	bckgroundmusic=pygame.mixer.Sound("res/bgroundmusic.wav")
+	bckgroundmusic.set_volume(0.3)
+	bckgroundmusic.play(-1)
 	size = width, height = 800, 640
 	speed = [0, 0]
 	shoot = False
