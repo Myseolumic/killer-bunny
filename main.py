@@ -37,6 +37,7 @@ def main():
 	endblock = generation[5] #4 on vastastele
 	endblock.id = 1
 	spikes = generation[6]
+	plaques = generation[7]
 	
 	CameraX = player.rect.x
 	CameraY = player.rect.y - 700#pikslites
@@ -78,6 +79,8 @@ def main():
 			W_height = generation[2][1]
 			tokens = generation[3]
 			enemies = generation[4]
+			spikes = generation[6]
+			plaques = generation[7]
 						
 			anim_list.empty()
 			smoke_list.empty()
@@ -210,6 +213,9 @@ def main():
 
 		for tile in world:
 			screen.blit(tile.image,(tile.rect.x -CameraX,tile.rect.y -CameraY))
+		
+		for p in plaques:
+			screen.blit(p.image,(p.rect.x -CameraX,p.rect.y -CameraY))
 
 		for fire in anim_list:
 			if fire.lugeja >= 20:
@@ -360,6 +366,12 @@ class Chilly(sprite.Sprite):
 			self.image = self.imagelist[self.image_index]
 		else:
 			self.lugeja +=1
+
+class Plaque(sprite.Sprite):
+	def __init__(self,x,y, counter):
+		sprite.Sprite.__init__(self)
+		self.image = image.load("res/plaque"+str(counter)+".png").convert()
+		self.rect = self.image.get_rect().move(32*x, 32*y)
 		
 class GUI_portrait(sprite.Sprite):
 	def __init__(self, img, offset):
@@ -394,6 +406,7 @@ def gen_world(filename):
 	enemies = sprite.Group()
 	token_list = sprite.Group()
 	spikes = sprite.Group()
+	infos = sprite.Group()
 	
 	newlist = []
 	
@@ -403,6 +416,7 @@ def gen_world(filename):
 		entities.add(Tile(img.get_width(),i,"res/wall.png"))
 		i+=1
 	
+	counter = 1
 	for i in range(len(rgbarray)): #y
 		for j in range(len(rgbarray[0])): #x
 			r = rgbarray[i][j][0]
@@ -435,6 +449,10 @@ def gen_world(filename):
 				dog = Dog(i*32,j*32)
 				dog.origin = [i,j]
 				enemies.add(dog)
+				
+			if(b == 255):
+				infos.add(Plaque(i,j,counter))
+				counter+=1
 			
 	newlist.append(entities)
 	newlist.append(player)
@@ -443,6 +461,7 @@ def gen_world(filename):
 	newlist.append(enemies)
 	newlist.append(finish)
 	newlist.append(spikes)
+	newlist.append(infos)
 	
 	return newlist
 
