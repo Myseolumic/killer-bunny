@@ -95,7 +95,7 @@ def main():
 		if player.deathScreen.get_alpha() == 255:
 			CameraX = 0
 			CameraY = 200
-			
+			player.yvel = 0
 			player.rect.x = player.origin[0]
 			player.rect.y = player.origin[1]
 			
@@ -103,13 +103,13 @@ def main():
 			for v in player.victim_list:
 				if v[0] == "dog":
 					enemies.add(Dog(v[1]*32, v[2]*32))
-					print("doge")
+					#print("doge")
 				if v[0] == "hillbilly":
 					enemies.add(Hillbilly(v[1]*32, v[2]*32))
-					print("hillbilly")
+					#print("hillbilly")
 				if v[0] == "token":
 					tokens.add(Chilly(v[1], v[2]))
-					print("token")
+					#print("token")
 					
 			player.victim_list = []
 		
